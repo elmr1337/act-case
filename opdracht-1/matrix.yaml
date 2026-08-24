@@ -1,0 +1,25 @@
+# Batchdefinitie voor de volledige matrix: 3 prompts x 3 varianten x LUT aan/uit
+# = 18 outputs. Draaien: make run  (of: make docker-run ARGS="run matrix.yaml")
+#
+# 🧑 HUMAN CHECKPOINT (PLAN.md §4): onderstaande prompts zijn CONCEPTEN.
+# Elmar stelt de definitieve testprompts vast vóór de echte run.
+# Richtlijn: andere personen dan de originele set, campagne-passende settings,
+# spreiding in leeftijd/context om consistentie te bewijzen. Alleen content
+# beschrijven — stijl komt uit de style prompt / references / LoRA.
+
+client_id: act-case
+analyze: true          # eerste run: analyse draait vóór training en generatie
+train:
+  enabled: true        # vereist FAL_API_KEY; zet op false om alleen prompt/multiref te draaien
+  steps: [1000]        # voor de overfitting-vergelijking in de deck: [500, 1000, 2000]
+
+variants: [prompt, multiref, lora]
+lut: [false, true]
+
+prompts:
+  - id: p1
+    text: "a woman in her early sixties waiting at a bus stop on a quiet city street"
+  - id: p2
+    text: "a young man reading a newspaper while riding a tram"
+  - id: p3
+    text: "two children playing football in a small urban park"

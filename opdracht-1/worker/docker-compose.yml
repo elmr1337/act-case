@@ -1,0 +1,28 @@
+# Optioneel: alleen voor de redis-mode ("zo schaal je 'm op"), geen requirement.
+# De default mode is één container zonder compose:
+#   make docker-build && make docker-run ARGS="run matrix.yaml"
+#
+# Met deze compose draait een worker permanent tegen redis; jobs erop zetten
+# gaat met de enqueue-CLI (of nog een worker-container met een run-commando):
+#   docker compose up -d
+#   docker compose run --rm --entrypoint enqueue worker \
+#     -type generate -variant lora -lut -prompt "..." -prompt-id p1
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  worker:
+    build: .
+    command: ["serve"]
+    env_file:
+      - path: ../.env
+        required: false
+    environment:
+      QUEUE_DRIVER: redis
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ..:/work
+    depends_on:
+      - redis
