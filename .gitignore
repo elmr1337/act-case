@@ -1,0 +1,19 @@
+# Secrets — nooit committen
+.env
+*.env.local
+
+# Reference-campagnebeelden: niet publiek delen, blijven buiten git
+opdracht-1/data/
+
+# Gegenereerde outputs zijn cache; alleen costs.json is bewijsmateriaal
+opdracht-1/outputs/*
+!opdracht-1/outputs/costs.json
+!opdracht-1/outputs/.gitkeep
+
+# Binaries
+opdracht-1/worker/bin/
+dist/
+
+# OS / editor
+.DS_Store
+Thumbs.db
