@@ -47,8 +47,9 @@ jouw joblijst:  lib/jobs.ts (localStorage)  ─┬─► niets meer, standaard
 - **Auth altijd redacten in logs.** `redactHeaders()` in `lib/discovery.ts`.
 - **Discovery-log bijhouden.** Elk nieuw inzicht over een endpoint gaat naar
   `docs/api-discovery.md`; het log zelf (`docs/discovery/log.jsonl`) bevat alleen
-  response-*vormen*, geen waardes. Het is append-only en groeit terwijl je de app
-  gebruikt — niet met de hand bewerken; opnieuw opbouwen kan met
+  response-*vormen*, geen waardes. Loggen staat standaard uit; `npm run explore`
+  zet het aan, en met `STORYTEQ_DISCOVERY_LOG=1` doet de proxy het ook. Het
+  bestand is append-only: niet met de hand bewerken, opnieuw opbouwen met
   `rm docs/discovery/log.jsonl && npm run explore`.
 - **Zod blijft loose.** De API mag velden toevoegen zonder dat de app breekt.
   Nieuwe aannames krijgen een test in `lib/schemas.test.ts` of `lib/dto.test.ts`.

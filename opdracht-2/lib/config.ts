@@ -44,9 +44,11 @@ function read(): StoryteqConfig {
       process.env.STORYTEQ_BASE_URL?.trim() ||
       `https://api.${region}.storyteq.com/v4`,
     companyId: process.env.STORYTEQ_COMPANY_ID?.trim() || undefined,
-    discoveryLog:
-      (process.env.STORYTEQ_DISCOVERY_LOG?.trim() ?? "") === "1" ||
-      process.env.NODE_ENV === "development",
+    // Alleen aan als je er expliciet om vraagt. Stond dit automatisch aan in
+    // development, dan groeide docs/discovery/log.jsonl bij elke `make dev` en
+    // was het bestand permanent "gewijzigd" in git. `npm run explore` zet hem
+    // zelf aan, dus de verkenning blijft gewoon loggen.
+    discoveryLog: (process.env.STORYTEQ_DISCOVERY_LOG?.trim() ?? "") === "1",
   });
 
   if (!parsed.success) {
