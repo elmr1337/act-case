@@ -44,3 +44,20 @@ func TestLoadDotEnv(t *testing.T) {
 		}
 	}
 }
+
+// docker --env-file stript geen inline comments; de config moet dat zelf
+// afvangen, ook voor waarden die al als env-var binnenkomen.
+func TestSanitizeAppliesToRealEnvVars(t *testing.T) {
+	t.Setenv("GEMINI_IMAGE_COST_USD", "0.134   # schatting, check actuele prijs")
+	t.Setenv("FAL_API_KEY", "sleutel-zonder-hash")
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load: %v", err)
+	}
+	if cfg.GeminiImageCostUSD != 0.134 {
+		t.Errorf("GeminiImageCostUSD = %v", cfg.GeminiImageCostUSD)
+	}
+	if cfg.FalAPIKey != "sleutel-zonder-hash" {
+		t.Errorf("FalAPIKey = %q", cfg.FalAPIKey)
+	}
+}

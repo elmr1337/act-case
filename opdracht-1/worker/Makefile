@@ -41,9 +41,10 @@ docker-build:
 
 # make docker-run ARGS="run matrix.yaml"
 # Mount opdracht-1/ als /work; draait als jouw uid zodat outputs van jou zijn.
+# Geen --env-file: opdracht-1/.env zit al in de mount en de worker leest
+# 'm zelf (mét correcte comment-afhandeling; docker's parser heeft die niet).
 docker-run:
 	docker run --rm \
-		$(if $(wildcard ../.env),--env-file ../.env,) \
 		--user $(shell id -u):$(shell id -g) \
 		-v $(abspath ..):/work \
 		$(IMAGE) $(ARGS)

@@ -16,9 +16,7 @@ services:
   worker:
     build: .
     command: ["serve"]
-    env_file:
-      - path: ../.env
-        required: false
+    # .env wordt door de worker zelf uit de mount gelezen (/work/.env)
     environment:
       QUEUE_DRIVER: redis
       REDIS_URL: redis://redis:6379/0

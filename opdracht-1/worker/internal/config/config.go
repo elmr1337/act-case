@@ -79,17 +79,17 @@ func Load() (*Config, error) {
 		DataDir:     getenv("DATA_DIR", "./data"),
 		OutputDir:   getenv("OUTPUT_DIR", "./outputs"),
 
-		RedisURL: os.Getenv("REDIS_URL"),
+		RedisURL: getenv("REDIS_URL", ""),
 
-		S3Endpoint:  os.Getenv("S3_ENDPOINT"),
-		S3Region:    os.Getenv("S3_REGION"),
-		S3Bucket:    os.Getenv("S3_BUCKET"),
-		S3AccessKey: os.Getenv("S3_ACCESS_KEY"),
-		S3SecretKey: os.Getenv("S3_SECRET_KEY"),
+		S3Endpoint:  getenv("S3_ENDPOINT", ""),
+		S3Region:    getenv("S3_REGION", ""),
+		S3Bucket:    getenv("S3_BUCKET", ""),
+		S3AccessKey: getenv("S3_ACCESS_KEY", ""),
+		S3SecretKey: getenv("S3_SECRET_KEY", ""),
 
-		FalAPIKey:       os.Getenv("FAL_API_KEY"),
-		GeminiAPIKey:    os.Getenv("GEMINI_API_KEY"),
-		AnthropicAPIKey: os.Getenv("ANTHROPIC_API_KEY"),
+		FalAPIKey:       getenv("FAL_API_KEY", ""),
+		GeminiAPIKey:    getenv("GEMINI_API_KEY", ""),
+		AnthropicAPIKey: getenv("ANTHROPIC_API_KEY", ""),
 
 		AnalyzeProvider:    getenv("ANALYZE_PROVIDER", "gemini"),
 		AnthropicModel:     getenv("ANTHROPIC_MODEL", "claude-opus-5"),
@@ -146,14 +146,29 @@ func Load() (*Config, error) {
 }
 
 func getenv(key, def string) string {
-	if v := os.Getenv(key); v != "" {
+	if v := sanitize(os.Getenv(key)); v != "" {
 		return v
 	}
 	return def
 }
 
+// sanitize maakt een configwaarde schoon, óók als hij al als echte env-var
+// binnenkwam (docker --env-file en compose strippen geen inline comments).
+func sanitize(v string) string {
+	v = strings.TrimSpace(v)
+	if !strings.HasPrefix(v, `"`) && !strings.HasPrefix(v, `'`) {
+		for i := 0; i < len(v); i++ {
+			if v[i] == '#' && (i == 0 || v[i-1] == ' ' || v[i-1] == '\t') {
+				v = strings.TrimSpace(v[:i])
+				break
+			}
+		}
+	}
+	return strings.Trim(v, `"'`)
+}
+
 func intenv(key string, def int) (int, error) {
-	v := os.Getenv(key)
+	v := sanitize(os.Getenv(key))
 	if v == "" {
 		return def, nil
 	}
@@ -165,7 +180,7 @@ func intenv(key string, def int) (int, error) {
 }
 
 func floatenv(key string, def float64) (float64, error) {
-	v := os.Getenv(key)
+	v := sanitize(os.Getenv(key))
 	if v == "" {
 		return def, nil
 	}
@@ -200,18 +215,7 @@ func loadDotEnv(path string) error {
 			continue
 		}
 		k = strings.TrimSpace(k)
-		v = strings.TrimSpace(v)
-		// Inline comments: alles vanaf een # dat door whitespace wordt
-		// voorafgegaan hoort niet bij de waarde (tenzij de waarde gequote is).
-		if !strings.HasPrefix(v, `"`) && !strings.HasPrefix(v, `'`) {
-			for i := 0; i < len(v); i++ {
-				if v[i] == '#' && (i == 0 || v[i-1] == ' ' || v[i-1] == '\t') {
-					v = strings.TrimSpace(v[:i])
-					break
-				}
-			}
-		}
-		v = strings.Trim(v, `"'`)
+		v = sanitize(v)
 		if k == "" || os.Getenv(k) != "" {
 			continue
 		}

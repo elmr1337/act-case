@@ -81,6 +81,13 @@ matrix.yaml      batchdefinitie van de volledige matrix
 
 ## Run-log & kosten
 
+> Verificatie na afronding: de containerized run (`make docker-run`) is
+> end-to-end getest op de definitieve code — de container draaide per abuis
+> een volledige extra generatieronde (+$0,55, alles geslaagd), wat meteen het
+> hardste bewijs was dat mount, .env-afhandeling, TLS en de providers vanuit
+> distroless werken. Methodekosten: $3,69; totaal gelogd incl. deze
+> verificatieronde: $4,24.
+
 Wordt na de run gegenereerd: `make -C worker costs` produceert de
 markdown-tabel (per cel: aantal jobs en kosten in USD) die hier en in de deck
 landt. Prijzen komen uit de provider-response waar mogelijk en anders uit
