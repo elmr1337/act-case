@@ -49,7 +49,7 @@ export function AssetStatusPage({ assetId }: { assetId: string }) {
 const PHASE_COPY: Record<AssetPhase, { title: string; body: string }> = {
   queued: {
     title: "In de wachtrij",
-    body: "Je asset staat klaar en is zo aan de beurt.",
+    body: "Je asset staat klaar en is zo aan de beurt. Dit kan een paar minuten duren.",
   },
   rendering: {
     title: "Wordt gemaakt",
@@ -101,7 +101,9 @@ function WaitingScreen({
   target?: number;
 }) {
   const copy = PHASE_COPY[phase];
-  const slow = elapsed > 90;
+  // Een echte render deed er ruim drie minuten over; pas daarna is "langer dan
+  // gebruikelijk" ook echt waar.
+  const slow = elapsed > 240;
 
   return (
     <div className="mx-auto flex max-w-lg flex-col items-center py-8 text-center sm:py-16">
@@ -129,7 +131,7 @@ function WaitingScreen({
 
       <p className="text-muted-foreground mt-8 max-w-sm text-sm">
         {slow
-          ? "Het duurt wat langer dan gebruikelijk, maar hij is er nog mee bezig. Je kunt dit tabblad open laten staan."
+          ? "Het duurt wat langer dan gebruikelijk, maar hij is er nog mee bezig. Je kunt dit tabblad gerust open laten staan."
           : "Je kunt dit tabblad open laten staan — we laten het weten zodra het klaar is."}
       </p>
     </div>
@@ -179,7 +181,12 @@ function ResultScreen({ asset }: { asset: AssetState }) {
 
       {asset.result ? (
         <>
-          <div className="border-border bg-card shadow-paper-lg overflow-hidden rounded-2xl border">
+          {/*
+            De hoogte is begrensd: een 9:16-video zou anders het hele scherm
+            vullen en de downloadknop ver onder de vouw duwen. Landschap blijft
+            gewoon breed, staand past nu ook in beeld.
+          */}
+          <div className="border-border shadow-paper-lg mx-auto flex w-fit max-w-full items-center justify-center overflow-hidden rounded-2xl border bg-neutral-950">
             {asset.result.kind === "video" ? (
               <video
                 src={asset.result.previewUrl}
@@ -188,14 +195,14 @@ function ResultScreen({ asset }: { asset: AssetState }) {
                 muted
                 loop
                 playsInline
-                className="w-full bg-black"
+                className="max-h-[46vh] w-auto max-w-full"
               />
             ) : (
               // eslint-disable-next-line @next/next/no-img-element -- gaat door onze eigen proxy
               <img
                 src={asset.result.previewUrl}
                 alt="De asset die je zojuist hebt gemaakt"
-                className="w-full"
+                className="max-h-[46vh] w-auto max-w-full"
               />
             )}
           </div>

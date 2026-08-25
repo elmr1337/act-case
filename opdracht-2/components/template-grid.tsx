@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Layers } from "lucide-react";
+import { ArrowRight, Film, Image as ImageIcon, LayoutTemplate } from "lucide-react";
 import Link from "next/link";
 
 import { ErrorState, EmptyState } from "@/components/feedback";
@@ -80,16 +80,26 @@ function TemplateCard({ template }: { template: TemplateSummary }) {
             {template.name}
           </h2>
           <p className="text-muted-foreground flex items-center gap-1.5 text-sm">
-            <Layers className="size-3.5" />
-            {template.fieldCount === 0
-              ? "Geen velden om in te vullen"
-              : `${template.fieldCount} ${template.fieldCount === 1 ? "veld" : "velden"} invullen`}
+            <KindIcon kind={template.mediaKind} />
+            {KIND_LABEL[template.mediaKind ?? "onbekend"]}
           </p>
         </div>
         <ArrowRight className="text-muted-foreground group-hover:text-primary mt-0.5 size-4 shrink-0 transition-all group-hover:translate-x-0.5" />
       </div>
     </Link>
   );
+}
+
+const KIND_LABEL: Record<string, string> = {
+  video: "Video",
+  banner: "Banner",
+  image: "Afbeelding",
+  onbekend: "Template",
+};
+
+function KindIcon({ kind }: { kind: TemplateSummary["mediaKind"] }) {
+  const Icon = kind === "video" ? Film : kind === "banner" ? LayoutTemplate : ImageIcon;
+  return <Icon className="size-3.5" />;
 }
 
 function TemplateGridSkeleton() {

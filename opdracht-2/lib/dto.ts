@@ -6,12 +6,13 @@
  * interface. Alle vertaalslag en alle giswerk zit hier, op één plek.
  */
 import type { Media, Template, TemplateParameter } from "./schemas";
-import { normalizeStatus, type MediaStatus } from "./schemas";
+import { isRequired, normalizeStatus, type MediaStatus } from "./schemas";
 
 /** Hoe een veld in de UI getoond wordt. */
 export type FieldKind =
   | "text"
   | "longtext"
+  | "select"
   | "image"
   | "video"
   | "color"
@@ -19,6 +20,8 @@ export type FieldKind =
   | "boolean"
   | "url"
   | "unknown";
+
+export type FieldOption = { label: string; value: string };
 
 export type FormField = {
   /** De sleutel die terug moet in `template_parameters`. */
@@ -28,18 +31,28 @@ export type FormField = {
   kind: FieldKind;
   /** Wat Storyteq zelf zei; blijft zichtbaar in de discovery-docs, niet in de UI. */
   rawType: string | null;
+  required: boolean;
+  /** Alleen bij `select`: de keuzes uit `meta.values`. */
+  options?: FieldOption[];
+  /** Voorinvulling uit `default` of `value`. */
+  initialValue: string;
   placeholder?: string;
 };
 
 export type TemplateSummary = {
   id: string;
   name: string;
-  fieldCount: number;
+  /** Wat er uit deze template komt: een video, een banner of een afbeelding. */
+  mediaKind: "video" | "banner" | "image" | null;
+  /** Hoe vaak er al iets mee gemaakt is. */
+  usageCount: number | null;
   updatedAt: string | null;
   thumbnailUrl: string | null;
 };
 
 export type TemplateDetail = TemplateSummary & {
+  /** Geschatte rendertijd in seconden, uit `processing_time`. */
+  estimatedSeconds: number | null;
   fields: FormField[];
 };
 
@@ -70,6 +83,7 @@ export type AssetState = {
  * tolerant: onbekende types worden een gewoon tekstveld in plaats van een crash.
  */
 const KIND_RULES: Array<[RegExp, FieldKind]> = [
+  [/^(enum|select|dropdown|choice|list)$/i, "select"],
   [/^(text|string|line|headline|title|copy)$/i, "text"],
   [/(textarea|paragraph|multiline|long_?text|body)/i, "longtext"],
   [/(image|photo|picture|logo|asset|media)/i, "image"],
@@ -112,31 +126,57 @@ export function humanizeName(name: string): string {
 }
 
 function toField(param: TemplateParameter): FormField {
-  const label = param.label?.trim() || humanizeName(param.name);
-  const kind = fieldKind(param.type, param.name);
+  const options = (param.meta?.values ?? [])
+    .map((option) => ({
+      label: option.label?.trim() || option.value,
+      value: option.value,
+    }))
+    .filter((option) => option.value !== "");
+
+  // Een enum zonder keuzes is geen keuzelijst; dan maar een tekstveld.
+  const kind =
+    fieldKind(param.type, param.name) === "select" && options.length === 0
+      ? "text"
+      : fieldKind(param.type, param.name);
+
   return {
     name: param.name,
-    label,
+    label: param.label?.trim() || humanizeName(param.name),
     kind,
     rawType: param.type ?? null,
+    required: isRequired(param.required),
+    options: kind === "select" ? options : undefined,
+    initialValue: param.default?.trim() || param.value?.trim() || "",
     placeholder: kind === "color" ? "#000000" : undefined,
   };
 }
 
 /**
- * Storyteq documenteert geen thumbnail-veld. We kijken op de plekken waar er
- * in de praktijk een afbeelding-URL kan staan en vallen anders netjes terug.
+ * De OpenAPI-spec kent geen thumbnail, maar de API geeft `thumbnail_url` wél
+ * terug — ook op het lijst-endpoint. Die URL is publiek (302 naar de CDN),
+ * maar we sturen hem niet naar de browser: die haalt hem via onze eigen proxy
+ * op, net als al het andere.
  */
 function findThumbnail(template: Template): string | null {
-  const candidates: unknown[] = [
-    (template as Record<string, unknown>).thumbnail,
-    (template as Record<string, unknown>).thumbnail_url,
-    (template as Record<string, unknown>).preview_url,
-    (template as Record<string, unknown>).poster,
-  ];
-  for (const value of candidates) {
-    if (typeof value === "string" && /^https?:\/\//.test(value)) return value;
-  }
+  const url = template.thumbnail_url;
+  const hasThumbnail = typeof url === "string" && /^https?:\/\//.test(url);
+  return hasThumbnail ? `/api/templates/${encodeURIComponent(template.id)}/thumbnail` : null;
+}
+
+/**
+ * Het lijst-endpoint geeft geen `parameters` terug — alleen het detail-endpoint
+ * doet dat. Op de kaart tonen we daarom niet het aantal velden maar wat er
+ * uitkomt: `media_types` bevat bijvoorbeeld ["image", "video"], waarbij de
+ * afbeelding de poster van de video is.
+ */
+function mediaKindOf(template: Template): TemplateSummary["mediaKind"] {
+  const kinds = new Set(
+    (template.media_types ?? []).map((m) => m.type?.toLowerCase()).filter(Boolean),
+  );
+  const main = template.main_media_type?.toLowerCase();
+  if (main === "video" || kinds.has("video")) return "video";
+  if (main === "banner" || kinds.has("banner")) return "banner";
+  if (kinds.has("image")) return "image";
   return null;
 }
 
@@ -144,16 +184,23 @@ export function toTemplateSummary(template: Template): TemplateSummary {
   return {
     id: template.id,
     name: template.name?.trim() || `Template ${template.id}`,
-    fieldCount: template.parameters?.length ?? 0,
+    mediaKind: mediaKindOf(template),
+    usageCount: template.media_count ?? null,
     updatedAt: template.updated_at ?? null,
     thumbnailUrl: findThumbnail(template),
   };
 }
 
 export function toTemplateDetail(template: Template): TemplateDetail {
+  const parameters = [...(template.parameters ?? [])].sort(
+    (a, b) => (a.order ?? 0) - (b.order ?? 0),
+  );
+
   return {
     ...toTemplateSummary(template),
-    fields: (template.parameters ?? []).map(toField),
+    /** Geschatte rendertijd in seconden; gebruikt in de copy van stap 3. */
+    estimatedSeconds: template.processing_time ?? null,
+    fields: parameters.map(toField),
   };
 }
 
@@ -167,21 +214,48 @@ const PHASE_PROGRESS: Record<AssetPhase, number> = {
   unknown: 25,
 };
 
-function pickResultUrl(media: Media): { kind: "video" | "image"; url: string } | null {
-  // De spec noemt zowel `urls` als `download_urls`; we pakken wat er is.
-  for (const bag of [media.download_urls, media.urls]) {
-    if (!bag) continue;
-    const video = bag.video;
-    if (typeof video === "string" && video) return { kind: "video", url: video };
-    const image = bag.image ?? bag.gif ?? bag.banner;
-    if (typeof image === "string" && image) return { kind: "image", url: image };
+export type AssetSource = { kind: "video" | "image"; url: string };
+
+function firstUrl(
+  bag: Media["urls"],
+  keys: Array<"video" | "preview_video" | "image" | "gif" | "banner">,
+): AssetSource | null {
+  if (!bag) return null;
+  for (const key of keys) {
+    const value = bag[key];
+    if (typeof value === "string" && value) {
+      return { kind: key.includes("video") ? "video" : "image", url: value };
+    }
   }
   return null;
 }
 
+/**
+ * Om te tónen: de CDN-URL's uit `urls`. Die serveren het bestand zelf en
+ * ondersteunen Range-requests, dus de videospeler kan ermee spoelen.
+ */
+export function previewSourceFor(media: Media): AssetSource | null {
+  return (
+    firstUrl(media.urls, ["video", "preview_video", "image"]) ??
+    firstUrl(media.download_urls, ["video", "image", "gif", "banner"])
+  );
+}
+
+/**
+ * Om te downloaden: `download_urls` wijst naar
+ * `/v4/open/media/{hash}/download/{formaat}`, het endpoint dat Storyteq
+ * daarvoor bedoeld heeft. Valt terug op de CDN-URL als dat er niet is.
+ */
+export function downloadSourceFor(media: Media): AssetSource | null {
+  return (
+    firstUrl(media.download_urls, ["video", "image", "gif", "banner"]) ??
+    firstUrl(media.urls, ["video", "preview_video", "image"])
+  );
+}
+
 export function toAssetState(media: Media): AssetState {
   const phase = normalizeStatus(media.current_status);
-  const source = pickResultUrl(media);
+  const source = downloadSourceFor(media);
   const finished = phase === "finished";
 
   return {
@@ -194,8 +268,9 @@ export function toAssetState(media: Media): AssetState {
     result:
       finished && source
         ? {
-            kind: source.kind,
-            previewUrl: `/api/assets/${media.id}/download?disposition=inline`,
+            kind: (previewSourceFor(media) ?? source).kind,
+            /** Onze eigen proxy, nooit de Storyteq-URL. */
+            previewUrl: `/api/assets/${media.id}/download?variant=preview`,
             downloadUrl: `/api/assets/${media.id}/download`,
             fileName: fileNameFor(media, source),
           }
@@ -203,24 +278,29 @@ export function toAssetState(media: Media): AssetState {
   };
 }
 
-export function fileNameFor(
-  media: Media,
-  source: { kind: "video" | "image"; url: string },
-): string {
+/**
+ * Een nette bestandsnaam. `media.name` is in de praktijk gewoon het id
+ * opnieuw, dus de templatenaam levert iets op waar iemand later nog wat aan
+ * heeft: `opdracht-2-26943410.mp4`.
+ */
+export function fileNameFor(media: Media, source: AssetSource): string {
   const fromUrl = source.url.split("?")[0].split("/").pop() ?? "";
   const ext = /\.[a-z0-9]{2,4}$/i.test(fromUrl)
     ? fromUrl.slice(fromUrl.lastIndexOf("."))
     : source.kind === "video"
       ? ".mp4"
-      : ".png";
-  const base = (media.name?.trim() || `storyteq-${media.id}`)
+      : ".jpg";
+
+  const label = media.template?.name?.trim() || "";
+  const base = label
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
-  return `${base || `asset-${media.id}`}${ext}`;
+
+  return base ? `${base}-${media.id}${ext}` : `storyteq-${media.id}${ext}`;
 }
 
 /** De URL waar het bestand écht staat — alleen server-side gebruikt. */
-export function sourceUrlFor(media: Media) {
-  return pickResultUrl(media);
+export function sourceUrlFor(media: Media, variant: "preview" | "download") {
+  return variant === "preview" ? previewSourceFor(media) : downloadSourceFor(media);
 }

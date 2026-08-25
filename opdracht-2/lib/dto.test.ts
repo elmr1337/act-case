@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { fieldKind, humanizeName, toAssetState, toTemplateDetail } from "./dto";
+import {
+  downloadSourceFor,
+  fieldKind,
+  humanizeName,
+  previewSourceFor,
+  toAssetState,
+  toTemplateDetail,
+} from "./dto";
 import { mediaSchema, templateSchema } from "./schemas";
 
 describe("fieldKind", () => {
@@ -66,14 +73,21 @@ describe("toAssetState", () => {
     const finished = toAssetState(
       mediaSchema.parse({
         id: 9,
-        name: "Zomer actie",
+        name: "26943410",
+        template: { name: "Opdracht 2" },
         current_status: "finished",
-        urls: { video: "https://cdn.storyteq.com/secret/x.mp4" },
+        urls: { video: "https://assets.api.europe-west1.storyteq.com/v1/assets/geheim" },
+        download_urls: {
+          video: "https://api.europe-west1.storyteq.com/v4/open/media/hash/download/video",
+        },
       }),
     );
+
     expect(finished.result?.downloadUrl).toBe("/api/assets/9/download");
-    expect(JSON.stringify(finished)).not.toContain("cdn.storyteq.com");
-    expect(finished.result?.fileName).toBe("zomer-actie.mp4");
+    expect(finished.result?.previewUrl).toBe("/api/assets/9/download?variant=preview");
+    expect(JSON.stringify(finished)).not.toContain("storyteq.com");
+    // `media.name` is in de praktijk het id opnieuw; de templatenaam is bruikbaarder.
+    expect(finished.result?.fileName).toBe("opdracht-2-9.mp4");
   });
 
   it("kiest video boven afbeelding als beide er zijn", () => {
@@ -93,5 +107,93 @@ describe("toAssetState", () => {
     );
     expect(failed.failed).toBe(true);
     expect(failed.result).toBeNull();
+  });
+});
+
+describe("previewSourceFor / downloadSourceFor", () => {
+  // De spec presenteert `urls` en `download_urls` als alternatieven, maar in
+  // werkelijkheid bestaan ze allebei en betekenen ze iets anders.
+  const media = mediaSchema.parse({
+    id: 1,
+    current_status: "finished",
+    urls: {
+      image: "https://assets.api/v1/assets/x/transforms/custom-thumbnail",
+      video: "https://assets.api/v1/assets/x?filename=render.mp4",
+    },
+    download_urls: {
+      video: "https://api/v4/open/media/hash/download/video",
+      image: "https://api/v4/open/media/hash/download/image",
+    },
+  });
+
+  it("toont vanaf de CDN en downloadt via het open-endpoint", () => {
+    expect(previewSourceFor(media)?.url).toContain("assets.api");
+    expect(downloadSourceFor(media)?.url).toContain("/open/media/");
+  });
+
+  it("valt terug op de andere set als er maar één is", () => {
+    const onlyCdn = mediaSchema.parse({
+      id: 2,
+      current_status: "finished",
+      urls: { video: "https://assets.api/v1/assets/y" },
+    });
+    expect(downloadSourceFor(onlyCdn)?.url).toContain("assets.api");
+  });
+});
+
+describe("toTemplateDetail — velden die niet in de spec staan", () => {
+  const template = templateSchema.parse({
+    id: 43973,
+    name: "Opdracht 2",
+    processing_time: 94,
+    thumbnail_url: "https://assets.api/v1/assets/x/transforms/custom-thumbnail",
+    parameters: [
+      { name: "b", label: "Tweede", type: "text", required: 0, order: 2 },
+      {
+        name: "a",
+        label: "Eerste",
+        type: "enum",
+        required: 1,
+        order: 1,
+        meta: {
+          values: [
+            { label: "Blauw", value: "parameterValue-1" },
+            { label: "Groen", value: "parameterValue-2" },
+          ],
+        },
+      },
+    ],
+  });
+
+  it("sorteert op order in plaats van op volgorde van de API", () => {
+    const detail = toTemplateDetail(template);
+    expect(detail.fields.map((f) => f.label)).toEqual(["Eerste", "Tweede"]);
+  });
+
+  it("maakt van een enum een keuzelijst met labels", () => {
+    const field = toTemplateDetail(template).fields[0];
+    expect(field.kind).toBe("select");
+    expect(field.options).toEqual([
+      { label: "Blauw", value: "parameterValue-1" },
+      { label: "Groen", value: "parameterValue-2" },
+    ]);
+  });
+
+  it("leest required als 0/1 en neemt de thumbnail en rendertijd over", () => {
+    const detail = toTemplateDetail(template);
+    expect(detail.fields[0].required).toBe(true);
+    expect(detail.fields[1].required).toBe(false);
+    expect(detail.estimatedSeconds).toBe(94);
+    // De browser krijgt onze proxy-URL, niet die van de Storyteq-CDN.
+    expect(detail.thumbnailUrl).toBe("/api/templates/43973/thumbnail");
+    expect(JSON.stringify(detail)).not.toContain("assets.api");
+  });
+
+  it("maakt van een enum zonder keuzes gewoon een tekstveld", () => {
+    const zonder = templateSchema.parse({
+      id: 1,
+      parameters: [{ name: "x", type: "enum", meta: { values: [] } }],
+    });
+    expect(toTemplateDetail(zonder).fields[0].kind).toBe("text");
   });
 });

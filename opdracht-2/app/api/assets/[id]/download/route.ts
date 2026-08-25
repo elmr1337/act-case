@@ -1,7 +1,9 @@
+import { cacheMedia, getCachedMedia } from "@/lib/asset-cache";
 import { getConfig } from "@/lib/config";
 import { AppError, handler } from "@/lib/api";
 import { fileNameFor, sourceUrlFor } from "@/lib/dto";
 import { getMedia } from "@/lib/storyteq";
+import { normalizeStatus } from "@/lib/schemas";
 
 /**
  * Stap 4: het bestand zelf.
@@ -18,10 +20,14 @@ import { getMedia } from "@/lib/storyteq";
 export const GET = handler(
   async (request: Request, ctx: { params: Promise<{ id: string }> }) => {
     const { id } = await ctx.params;
-    const inline = new URL(request.url).searchParams.get("disposition") === "inline";
+    // `preview` = de CDN-URL in de speler; anders het download-endpoint.
+    const variant =
+      new URL(request.url).searchParams.get("variant") === "preview"
+        ? "preview"
+        : "download";
 
-    const media = await getMedia(id);
-    const source = sourceUrlFor(media);
+    const media = await resolveMedia(id);
+    const source = sourceUrlFor(media, variant);
     if (!source) {
       throw new AppError("not_found", {
         message: "Dit bestand is nog niet klaar om te downloaden.",
@@ -47,7 +53,7 @@ export const GET = handler(
     );
     headers.set(
       "Content-Disposition",
-      `${inline ? "inline" : "attachment"}; filename="${fileName}"`,
+      `${variant === "preview" ? "inline" : "attachment"}; filename="${fileName}"`,
     );
     // Doorgeven zodat de video-player kan spoelen.
     for (const key of ["content-length", "content-range", "accept-ranges", "etag"]) {
@@ -59,6 +65,21 @@ export const GET = handler(
     return new Response(upstream.body, { status: upstream.status, headers });
   },
 );
+
+/**
+ * Haalt de media op, maar hergebruikt een afgeronde render uit de cache. Dat
+ * scheelt een Storyteq-call per Range-request van de videospeler.
+ */
+async function resolveMedia(id: string) {
+  const cached = getCachedMedia(id);
+  if (cached) return cached;
+
+  const media = await getMedia(id);
+  if (normalizeStatus(media.current_status) === "finished") {
+    cacheMedia(id, media);
+  }
+  return media;
+}
 
 /**
  * Of de asset-URL's auth nodig hebben staat nergens gedocumenteerd. We proberen

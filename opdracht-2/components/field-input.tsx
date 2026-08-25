@@ -5,9 +5,16 @@ import { ImageOff, Link2 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import type { FormField } from "@/lib/dto";
+import type { FieldOption, FormField } from "@/lib/dto";
 
 /**
  * Eén veld uit de template-configuratie, vertaald naar iets wat een niet-
@@ -32,6 +39,13 @@ export function FieldInput({
     <div className="space-y-2">
       <Label htmlFor={id} className="text-sm font-medium">
         {field.label}
+        {/* De meeste velden zijn optioneel; dan is het rustiger om alleen de
+            verplichte te markeren in plaats van alle andere. */}
+        {field.required && (
+          <span className="text-muted-foreground ml-1.5 text-xs font-normal">
+            verplicht
+          </span>
+        )}
       </Label>
 
       <Control
@@ -92,6 +106,19 @@ function Control({ id, field, value, invalid, describedBy, onChange }: ControlPr
   };
 
   switch (field.kind) {
+    case "select":
+      return (
+        <SelectControl
+          id={id}
+          value={value}
+          options={field.options ?? []}
+          label={field.label}
+          invalid={invalid}
+          describedBy={describedBy}
+          onChange={onChange}
+        />
+      );
+
     case "longtext":
       return (
         <Textarea
@@ -147,6 +174,37 @@ function Control({ id, field, value, invalid, describedBy, onChange }: ControlPr
         />
       );
   }
+}
+
+/** `type: "enum"` uit de API: de keuzes staan in `meta.values`. */
+function SelectControl({
+  id,
+  value,
+  options,
+  label,
+  invalid,
+  describedBy,
+  onChange,
+}: Omit<ControlProps, "field"> & { options: FieldOption[]; label: string }) {
+  return (
+    <Select value={value || undefined} onValueChange={onChange}>
+      <SelectTrigger
+        id={id}
+        aria-invalid={invalid || undefined}
+        aria-describedby={describedBy}
+        className={cn("w-full", invalid && "border-destructive")}
+      >
+        <SelectValue placeholder={`Kies een ${label.toLowerCase()}…`} />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map((option) => (
+          <SelectItem key={option.value} value={option.value}>
+            {option.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
 }
 
 function ColorControl({

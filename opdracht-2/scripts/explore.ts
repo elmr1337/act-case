@@ -18,6 +18,14 @@ import { getConfig } from "../lib/config";
 import { shapeOf } from "../lib/discovery";
 import { rawRequest } from "../lib/storyteq-transport";
 
+/**
+ * Dit script bestaat om de API te leren kennen; het log ís het resultaat.
+ * De logger staat daarom altijd aan, ook buiten development. Dit mag na de
+ * imports staan omdat `getConfig()` de omgeving pas leest bij de eerste call,
+ * en die komt uit `main()`.
+ */
+if (!process.env.STORYTEQ_DISCOVERY_LOG) process.env.STORYTEQ_DISCOVERY_LOG = "1";
+
 const RAW_DIR = path.join(process.cwd(), "docs", "discovery", "raw");
 
 const c = {

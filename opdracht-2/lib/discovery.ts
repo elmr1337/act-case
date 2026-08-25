@@ -119,13 +119,18 @@ export type DiscoveryEntry = {
   note?: string;
 };
 
-/** Vervangt de token door een onschadelijke marker. */
+/**
+ * Vervangt gevoelige headers door een onschadelijke marker. Naast de token gaat
+ * ook `X-Company-Id` eruit: dat is een interne ACT-identifier en het log wordt
+ * gecommit. Dát de header bestaat en verplicht is, staat in api-discovery.md —
+ * de waarde hoeft daar niet bij.
+ */
+const SENSITIVE_HEADER = /authorization|api-key|token|cookie|company-id/i;
+
 export function redactHeaders(headers: HeadersInit | undefined): Record<string, string> {
   const out: Record<string, string> = {};
   new Headers(headers).forEach((value, key) => {
-    out[key] = /authorization|api-key|token|cookie/i.test(key)
-      ? `<redacted:${value.length}chars>`
-      : value;
+    out[key] = SENSITIVE_HEADER.test(key) ? `<redacted:${value.length}chars>` : value;
   });
   return out;
 }

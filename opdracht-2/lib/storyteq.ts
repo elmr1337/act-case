@@ -121,12 +121,25 @@ export async function createMedia(
     `/content/templates/${encodeURIComponent(templateId)}/media`,
     {
       method: "POST",
-      body: { template_parameters: templateParameters },
+      body: { template_parameters: withoutEmptyValues(templateParameters) },
       schema: createdMediaSchema,
       note: "media aanmaken",
     },
   );
   return result.data;
+}
+
+/**
+ * Een leeg optioneel veld moet je wéglaten, niet als lege string meesturen.
+ * Storyteq antwoordt op `"parameter-…": ""` bij een image-parameter met
+ * "The template parameters.parameter-… format is invalid" — een 422 waar de
+ * gebruiker niets aan kan doen, want het veld was niet verplicht.
+ * Weglaten betekent: gebruik de standaardwaarde van de template.
+ */
+function withoutEmptyValues(parameters: Record<string, string>) {
+  return Object.fromEntries(
+    Object.entries(parameters).filter(([, value]) => value.trim() !== ""),
+  );
 }
 
 export async function getMedia(mediaId: string) {

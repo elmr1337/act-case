@@ -12,20 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ClientError } from "@/lib/client";
 import { useCreateAsset, useTemplate } from "@/lib/queries";
+import type { TemplateDetail } from "@/lib/dto";
 
 /** Stap 2: invullen. Alleen de velden die de template zelf aandraagt. */
 export function AssetForm({ templateId }: { templateId: string }) {
-  const router = useRouter();
   const { data: template, isPending, isError, error, refetch } = useTemplate(templateId);
-  const create = useCreateAsset();
-
-  const [values, setValues] = useState<Record<string, string>>({});
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-
-  const hasInput = useMemo(
-    () => Object.values(values).some((v) => v.trim() !== ""),
-    [values],
-  );
 
   if (isPending) return <FormSkeleton />;
 
@@ -39,7 +30,31 @@ export function AssetForm({ templateId }: { templateId: string }) {
     );
   }
 
+  // De key zorgt dat de formulierstaat opnieuw uit de template wordt opgebouwd
+  // als je van template wisselt — inclusief de standaardwaardes.
+  return <TemplateForm key={template.id} template={template} />;
+}
+
+function TemplateForm({ template }: { template: TemplateDetail }) {
+  const router = useRouter();
+  const create = useCreateAsset();
+
+  const [values, setValues] = useState<Record<string, string>>(() =>
+    Object.fromEntries(template.fields.map((f) => [f.name, f.initialValue])),
+  );
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const missing = useMemo(
+    () =>
+      template.fields.filter(
+        (field) => field.required && !(values[field.name] ?? "").trim(),
+      ),
+    [template.fields, values],
+  );
+
   const noFields = template.fields.length === 0;
+  const hasContent = Object.values(values).some((v) => v.trim() !== "");
+  const canSubmit = noFields || (missing.length === 0 && hasContent);
 
   function setValue(name: string, value: string) {
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -54,24 +69,39 @@ export function AssetForm({ templateId }: { templateId: string }) {
 
   function onSubmit(event: React.FormEvent) {
     event.preventDefault();
-    setFieldErrors({});
 
+    // Verplichte velden vangen we hier al af — dat scheelt een ronde naar
+    // Storyteq en de gebruiker ziet meteen waar het aan ligt.
+    if (missing.length > 0) {
+      setFieldErrors(
+        Object.fromEntries(missing.map((f) => [f.name, "Dit veld is verplicht."])),
+      );
+      document
+        .getElementById(`field-${missing[0].name}`)
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    setFieldErrors({});
     const parameters = Object.fromEntries(
-      template!.fields.map((field) => [field.name, values[field.name]?.trim() ?? ""]),
+      template.fields.map((field) => [field.name, values[field.name]?.trim() ?? ""]),
     );
 
     create.mutate(
-      { templateId, parameters },
+      { templateId: template.id, parameters },
       {
         onSuccess: (asset) => router.push(`/asset/${encodeURIComponent(asset.id)}`),
         onError: (err) => {
           if (err instanceof ClientError && err.fields) {
             // Storyteq geeft fouten per parameter terug; die horen bij het veld.
-            const mapped: Record<string, string> = {};
-            for (const [key, messages] of Object.entries(err.fields)) {
-              mapped[key] = messages.join(" ");
-            }
-            setFieldErrors(mapped);
+            setFieldErrors(
+              Object.fromEntries(
+                Object.entries(err.fields).map(([key, messages]) => [
+                  key.replace(/^template_parameters\./, ""),
+                  messages.join(" "),
+                ]),
+              ),
+            );
             toast.error("Niet alle velden zijn goed ingevuld", {
               description: "We hebben aangegeven welke.",
             });
@@ -79,9 +109,7 @@ export function AssetForm({ templateId }: { templateId: string }) {
           }
           toast.error("Aanmaken lukte niet", {
             description:
-              err instanceof ClientError
-                ? err.message
-                : "Probeer het nog een keer.",
+              err instanceof ClientError ? err.message : "Probeer het nog een keer.",
           });
         },
       },
@@ -99,9 +127,7 @@ export function AssetForm({ templateId }: { templateId: string }) {
       </Link>
 
       <div className="mb-8 space-y-2">
-        <h1 className="font-heading text-3xl font-bold sm:text-4xl">
-          {template.name}
-        </h1>
+        <h1 className="font-heading text-3xl font-bold sm:text-4xl">{template.name}</h1>
         <p className="text-muted-foreground">
           {noFields
             ? "Deze template heeft geen velden — je kunt hem meteen maken."
@@ -132,7 +158,7 @@ export function AssetForm({ templateId }: { templateId: string }) {
           <Button
             type="submit"
             size="lg"
-            disabled={create.isPending || (!hasInput && !noFields)}
+            disabled={create.isPending || !canSubmit}
             className="w-full sm:w-auto sm:min-w-56"
           >
             {create.isPending ? (
@@ -149,14 +175,26 @@ export function AssetForm({ templateId }: { templateId: string }) {
           </Button>
 
           <p className="text-muted-foreground text-xs" aria-live="polite">
-            {!hasInput && !noFields
-              ? "Vul eerst minstens één veld in."
-              : "Dit duurt meestal een halve minuut."}
+            {missing.length > 0
+              ? `Nog ${missing.length} verplicht ${missing.length === 1 ? "veld" : "velden"} in te vullen.`
+              : !hasContent && !noFields
+                ? "Vul eerst minstens één veld in."
+                : durationHint(template.estimatedSeconds)}
           </p>
         </div>
       </form>
     </div>
   );
+}
+
+/**
+ * `processing_time` van de template is de rendertijd — de wachtrij zit er niet
+ * bij. In de praktijk duurde een render van 94 seconden ruim drie minuten van
+ * knop tot bestand. We beloven dus niets preciezer dan we waar kunnen maken.
+ */
+function durationHint(seconds: number | null): string {
+  if (seconds && seconds > 120) return "Dit kan een paar minuten duren.";
+  return "Dit duurt meestal één tot drie minuten.";
 }
 
 function FormSkeleton() {

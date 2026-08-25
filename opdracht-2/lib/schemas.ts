@@ -29,11 +29,42 @@ export function normalizeStatus(raw: unknown): MediaStatus {
     : "unknown";
 }
 
+/** Keuzelijst bij `type: "enum"`: `meta.values` bevat label/value-paren. */
+export const parameterMetaSchema = z.looseObject({
+  values: z
+    .array(
+      z.looseObject({
+        label: z.string().nullish(),
+        value: z.union([z.string(), z.number()]).transform(String),
+      }),
+    )
+    .nullish(),
+  labels: z.boolean().nullish(),
+  managingScene: z.boolean().nullish(),
+});
+
 export const templateParameterSchema = z.looseObject({
   name: z.string(),
   label: z.string().nullish(),
   type: z.string().nullish(),
+  /** Komt als 0/1 binnen, niet als boolean. */
+  required: z.union([z.boolean(), z.number(), z.string()]).nullish(),
+  order: z.number().nullish(),
+  default: z.string().nullish(),
+  value: z.string().nullish(),
+  meta: parameterMetaSchema.nullish(),
+  /** Toont dit veld alleen bij een bepaalde waarde van een ander veld. */
+  show_if: z.unknown().nullish(),
+  input_type: z.string().nullish(),
 });
+
+/** `required` komt als 0/1, "1", of boolean binnen — allemaal hetzelfde bedoeld. */
+export function isRequired(value: unknown): boolean {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value === 1;
+  if (typeof value === "string") return value === "1" || value.toLowerCase() === "true";
+  return false;
+}
 
 export const templateSchema = z.looseObject({
   id: z.union([z.number(), z.string()]).transform(String),
@@ -43,6 +74,15 @@ export const templateSchema = z.looseObject({
   parameters: z.array(templateParameterSchema).nullish(),
   project_dir: z.string().nullish(),
   blueprint: z.unknown().nullish(),
+  /** Staat niet in de spec, maar zit er wel in — ook op het lijst-endpoint. */
+  thumbnail_url: z.string().nullish(),
+  /** Geschatte rendertijd in seconden. Alleen op het detail-endpoint. */
+  processing_time: z.number().nullish(),
+  main_media_type: z.string().nullish(),
+  /** Welke formaten deze template oplevert: video, banner en/of image. */
+  media_types: z.array(z.looseObject({ type: z.string().nullish() })).nullish(),
+  archive: z.boolean().nullish(),
+  media_count: z.number().nullish(),
 });
 
 export const mediaParameterSchema = z.looseObject({
@@ -52,13 +92,19 @@ export const mediaParameterSchema = z.looseObject({
   value: z.unknown().nullish(),
 });
 
-/** De spec noemt zowel `urls` (Media) als `download_urls` (MediaEvent). We accepteren allebei. */
+/**
+ * De spec noemt `urls` (Media) én `download_urls` (MediaEvent) alsof het
+ * alternatieven zijn. In werkelijkheid bestaan ze allebei en betekenen ze iets
+ * anders: `urls` wijst naar de CDN om te bekíjken, `download_urls` naar
+ * `/v4/open/media/{hash}/download/{format}` om te downloaden.
+ */
 const urlBagSchema = z
   .looseObject({
     image: z.string().nullish(),
     video: z.string().nullish(),
     gif: z.string().nullish(),
     banner: z.string().nullish(),
+    preview_video: z.string().nullish(),
   })
   .nullish();
 
@@ -72,8 +118,19 @@ export const mediaSchema = z.looseObject({
   download_urls: urlBagSchema,
   parameters: z.array(mediaParameterSchema).nullish(),
   duration: z.number().nullish(),
+  main_media_type: z.string().nullish(),
+  /** De media-response draagt de template mee — handig voor een nette bestandsnaam. */
+  template: z.looseObject({ name: z.string().nullish() }).nullish(),
   created_at: z.string().nullish(),
   updated_at: z.string().nullish(),
+});
+
+/** Laravel-paginatie; bevestigd op /content/templates/{id}/media. */
+export const paginationMetaSchema = z.looseObject({
+  current_page: z.number().nullish(),
+  last_page: z.number().nullish(),
+  per_page: z.number().nullish(),
+  total: z.number().nullish(),
 });
 
 /** Alle v4-responses zitten in een `data`-envelope. */

@@ -13,8 +13,11 @@ const schema = z.object({
   /** Override voor de base URL; anders afgeleid uit de region. */
   baseUrl: z.string().url(),
   /**
-   * Komt niet voor in de v4-spec (wel in de platform-integration iframe-SDK).
-   * Optioneel gehouden tot discovery uitwijst of de API er iets mee doet.
+   * Komt niet voor in de v4-spec, maar is in de praktijk verplicht zodra de
+   * token bij meerdere companies mag: zonder deze header antwoordt Storyteq met
+   * 403 "This user has access to multiple companies". Schema-technisch
+   * optioneel, want een token met één company werkt er wél zonder.
+   * Zie docs/api-discovery.md §2.
    */
   companyId: z.string().optional(),
   /** Schrijft elke proxy-call naar docs/discovery/log.jsonl (auth geredact). */

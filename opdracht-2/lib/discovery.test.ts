@@ -61,12 +61,17 @@ describe("redactHeaders", () => {
     expect(redacted.accept).toBe("application/json");
   });
 
-  it("redact ook api-key, token en cookie headers", () => {
+  it("redact ook api-key, cookie en de company-id", () => {
     const redacted = redactHeaders({
       "X-Api-Key": "abc",
       Cookie: "session=xyz",
+      // Interne identifier; het log wordt gecommit. Verzonnen waarde, juist
+      // omdat deze test in de repo staat.
+      "X-Company-Id": "424242",
     });
     expect(redacted["x-api-key"]).toMatch(/^<redacted:/);
     expect(redacted.cookie).toMatch(/^<redacted:/);
+    expect(redacted["x-company-id"]).toMatch(/^<redacted:/);
+    expect(JSON.stringify(redacted)).not.toContain("424242");
   });
 });
