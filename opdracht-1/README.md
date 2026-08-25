@@ -99,8 +99,7 @@ geconfigureerde prijzen per beeld/step (bron staat per regel in
 - [x] Matrix gedraaid in 3 iteratierondes met curatie-feedback (27 beelden, $3,69 totaal)
 - [x] LUT-as bewust geschrapt na een eigen poging in Resolve — engine blijft getest in de worker; zie verbeterpunten
 - [x] 🧑 Curatie: multiref (ronde 3) unaniem winnaar → 3 finals in `images/final/`
-- [x] Deck: 5 slides (PNG + PDF) in `deck/` — concept
-- [ ] 🧑 Deck-teksten herschrijven in eigen woorden (laatste checkpoint)
+- [x] Deck: 5 slides (PNG + PDF) in `deck/`, in drie reviewrondes met Elmar aangescherpt en goedgekeurd
 
 ## Wat ik anders zou doen met meer tijd/budget
 
