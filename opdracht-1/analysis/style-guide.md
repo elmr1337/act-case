@@ -79,4 +79,6 @@ de content-regels hierboven gaan per prompt mee via matrix.yaml):
 > foreground, shallow depth of field. Everyday Dutch setting under changeable
 > skies (overcast grey-blue or fresh sunny blue). Colorful casual clothing and
 > pastel props over a natural mid-saturation grade, warm skin, off-center
-> tilted snapshot framing, joyful spontaneous mood.
+> tilted snapshot framing, joyful spontaneous mood. Natural unretouched skin
+> texture, candid documentary realism, subtle imperfections; never a plastic,
+> airbrushed or CGI-smooth look.

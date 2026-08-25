@@ -54,6 +54,7 @@ type Config struct {
 	ImageAspect   string // gemini aspectRatio, e.g. 3:4
 	ImageMaxEdge  int    // reference-beelden worden hiernaar geschaald vóór upload
 	TrainSteps    int
+	LoraScale     float64 // gewicht van de LoRA bij generatie (identity-pull vs stijl)
 
 	// Cost config (used when the provider response carries no cost)
 	GeminiImageCostUSD   float64
@@ -115,6 +116,9 @@ func Load() (*Config, error) {
 		return nil, err
 	}
 	if c.ImageMaxEdge, err = intenv("IMAGE_MAX_EDGE", 1536); err != nil {
+		return nil, err
+	}
+	if c.LoraScale, err = floatenv("LORA_SCALE", 0.85); err != nil {
 		return nil, err
 	}
 	if c.GeminiImageCostUSD, err = floatenv("GEMINI_IMAGE_COST_USD", 0.134); err != nil {

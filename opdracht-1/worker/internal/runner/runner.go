@@ -193,8 +193,15 @@ func (r *Runner) generate(ctx context.Context, j job.Job) (string, error) {
 			return "", rerr
 		}
 		instruction := fmt.Sprintf(
-			"Create a brand-new photograph in exactly the photographic style of the attached reference images: match their lighting, color grade, palette, composition style, lens feel, depth of field and mood precisely. "+
-				"Do not copy or reuse any person, face or specific location from the references; this must be an entirely new scene. New subject: %s", j.Prompt)
+			"Create a brand-new photograph in exactly the photographic style of the attached reference images: match their lighting, color grade, palette, lens feel and mood precisely.\n"+
+				"Mandatory composition rules:\n"+
+				"- tight close-up framing on the face (head-and-shoulders or waist-up), the face is the clear focal point\n"+
+				"- camera slightly below eye level\n"+
+				"- shallow depth of field with a blurred hand, phone or prop breaking the immediate foreground\n"+
+				"- subject slightly off-center, candid snapshot feel, background softly out of focus\n"+
+				"- the background contains NO other people: only the subject(s) described below, everyday Dutch setting\n"+
+				"Do not copy or reuse any person, face or specific location from the references; invent entirely new people.\n"+
+				"New subject: %s", j.Prompt)
 		gen, err = r.Gemini.GenerateWithRefs(ctx, instruction, refs)
 	case job.VariantLora:
 		loraURL := j.LoraURL

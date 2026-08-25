@@ -22,6 +22,7 @@ type Fal struct {
 	LoraModel  string
 	TrainModel string
 	ImageSize  string // fal image_size enum, e.g. portrait_4_3
+	LoraScale  float64
 
 	ImageCostUSD float64 // per gegenereerde afbeelding (config-schatting)
 	TrainCostUSD float64 // per 1000 steps (config-schatting)
@@ -39,6 +40,7 @@ func NewFal(cfg *config.Config) *Fal {
 		LoraModel:    cfg.FalLoraModel,
 		TrainModel:   cfg.FalTrainModel,
 		ImageSize:    cfg.ImageSize,
+		LoraScale:    cfg.LoraScale,
 		ImageCostUSD: cfg.FalImageCostUSD,
 		TrainCostUSD: cfg.FalTrainCostUSD,
 		HTTP:         &http.Client{Timeout: 2 * time.Minute},
@@ -229,7 +231,7 @@ func (f *Fal) GenerateLora(ctx context.Context, prompt, loraURL string) (GenResu
 		"output_format":         "png",
 		"enable_safety_checker": true,
 		"loras": []map[string]any{
-			{"path": loraURL, "scale": 1.0},
+			{"path": loraURL, "scale": f.LoraScale},
 		},
 	}
 	raw, _, err := f.submitAndAwait(ctx, f.LoraModel, input, 10*time.Minute)
