@@ -7,6 +7,7 @@ import {
   FileSpreadsheet,
   Loader2,
   Sparkles,
+  Table2,
   TriangleAlert,
   Upload,
 } from "lucide-react";
@@ -17,6 +18,7 @@ import { toast } from "sonner";
 
 import { AppShell } from "@/components/app-shell";
 import { ErrorState } from "@/components/feedback";
+import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api, ClientError } from "@/lib/client";
@@ -199,6 +201,8 @@ function BatchWizard({ template }: { template: TemplateDetail }) {
         </p>
       </div>
 
+      <ModeToggle templateId={template.id} />
+
       <Button
         type="button"
         size="lg"
@@ -227,7 +231,30 @@ function BatchWizard({ template }: { template: TemplateDetail }) {
   return (
     <AppShell actions={actions}>
       <div className="mx-auto max-w-3xl">
-        <h1 className="sr-only">{template.name} — meerdere tegelijk</h1>
+        {/* Zonder deze kop lijkt de batch-pagina te veel op het gewone
+            formulier — je moet meteen zien dat je iets anders aan het doen bent. */}
+        <div className="mb-8 space-y-2">
+          <span className="bg-accent text-accent-foreground inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold">
+            <Table2 className="size-3.5" />
+            Meerdere tegelijk
+          </span>
+          {/* De templatenaam staat al in de balk hierboven; hier gaat het om
+              de modus waar je in zit. */}
+          <h1 className="font-heading text-3xl font-bold sm:text-4xl">
+            Maak er meerdere in één keer
+          </h1>
+          <p className="text-muted-foreground text-lg text-balance">
+            Vul één regel per asset in een bestand en maak ze in één keer.
+            Liever er één?{" "}
+            <Link
+              href={`/maken/${encodeURIComponent(template.id)}`}
+              className="text-primary hover:text-primary/80 font-medium underline underline-offset-4 transition-colors"
+            >
+              Terug naar het formulier
+            </Link>
+            .
+          </p>
+        </div>
 
         <ol className="space-y-6">
           <li className="border-border rounded-2xl border p-6">

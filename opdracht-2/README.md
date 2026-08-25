@@ -81,6 +81,9 @@ curl -s localhost:3000/api/health
 
 Twee dingen die de opdracht niet vroeg maar die de app pas echt bruikbaar maken:
 
+Je schakelt er per template tussen met een **Eén / Meerdere**-knop in de balk,
+zodat je nooit ongemerkt in de verkeerde modus zit.
+
 **Honderd assets uit één Excel-bestand.** Je haalt bij een template een
 invulbestand op — één kolom per veld, verplichte velden met een `*`, en een
 ingevulde voorbeeldregel. Je vult hem in Excel, leest hem hier weer in, en ziet

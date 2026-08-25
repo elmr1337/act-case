@@ -1,7 +1,6 @@
-import { Rows3, Table2 } from "lucide-react";
 import Link from "next/link";
 
-import { JobsMenu } from "@/components/jobs-menu";
+import { TopNav } from "@/components/top-nav";
 
 /**
  * Eén frame om alle stappen heen. Geen sidebar, geen dashboard: een topbar met
@@ -29,26 +28,7 @@ export function AppShell({
             Asset maken
           </Link>
 
-          <div className="flex items-center gap-2">
-            <Link
-              href="/batch"
-              className="border-border hover:border-foreground/25 flex h-10 items-center gap-2 rounded-xl border px-3.5 text-sm font-medium transition-colors sm:px-4"
-            >
-              <Table2 className="size-4" />
-              <span className="hidden sm:inline">Meerdere tegelijk</span>
-            </Link>
-
-            <Link
-              href="/overzicht"
-              aria-label="Overzicht van jouw assets"
-              className="border-border hover:border-foreground/25 hidden h-10 items-center gap-2 rounded-xl border px-3.5 text-sm font-medium transition-colors sm:flex"
-            >
-              <Rows3 className="size-4" />
-              Overzicht
-            </Link>
-
-            <JobsMenu />
-          </div>
+          <TopNav />
         </div>
 
         {actions && (

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Loader2, Sparkles, Table2 } from "lucide-react";
+import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import { ErrorState } from "@/components/feedback";
 import { FieldInput } from "@/components/field-input";
+import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ClientError } from "@/lib/client";
@@ -168,6 +169,8 @@ function TemplateForm({ template }: { template: TemplateDetail }) {
         </p>
       </div>
 
+      <ModeToggle templateId={template.id} />
+
       <Button
         type="submit"
         form={formId}
@@ -197,22 +200,11 @@ function TemplateForm({ template }: { template: TemplateDetail }) {
         {/* De naam staat al in de balk hierboven; hier alleen voor schermlezers. */}
         <h1 className="sr-only">{template.name}</h1>
 
-        <div className="mb-8 flex flex-wrap items-baseline justify-between gap-3">
-          <p className="text-muted-foreground text-lg text-balance">
-            {noFields
-              ? "Deze template heeft geen velden — je kunt hem meteen maken."
-              : "Vul in wat er in je asset moet komen te staan."}
-          </p>
-          {!noFields && (
-            <Link
-              href={`/maken/${encodeURIComponent(template.id)}/batch`}
-              className="text-primary hover:text-primary/80 flex shrink-0 items-center gap-1.5 text-sm font-medium transition-colors"
-            >
-              <Table2 className="size-4" />
-              Meerdere tegelijk
-            </Link>
-          )}
-        </div>
+        <p className="text-muted-foreground mb-8 text-lg text-balance">
+          {noFields
+            ? "Deze template heeft geen velden — je kunt hem meteen maken."
+            : "Vul in wat er in je asset moet komen te staan."}
+        </p>
 
         <form id={formId} onSubmit={onSubmit} noValidate>
           <div className="divide-border divide-y">
