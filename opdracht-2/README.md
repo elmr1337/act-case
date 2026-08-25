@@ -1,14 +1,18 @@
 # Opdracht 2 — Storyteq Template Builder
 
-Een Next.js-app waarmee iemand zonder technische achtergrond in vier stappen een
-asset maakt: **kies een template → vul in → wacht → download**. Geen dashboard,
-geen instellingen, geen jargon.
+Een Next.js-app waarmee iemand zonder technische achtergrond een asset maakt:
+**kies een template → vul in → download**. Eén tegelijk, of honderd via een
+Excel-bestand. Geen dashboard, geen instellingen, geen jargon.
 
-![Stap 1 — een template kiezen](docs/screenshots/01-templates.png)
+![Een template kiezen](docs/screenshots/01-templates.png)
 
-| Stap 2 — invullen | Stap 3 — genereren | Stap 4 — klaar |
+| Invullen | Genereren | Klaar |
 |---|---|---|
 | ![](docs/screenshots/02-invullen.png) | ![](docs/screenshots/03-genereren.png) | ![](docs/screenshots/04-klaar.png) |
+
+| Meerdere via CSV | Controle vóór het maken | Jouw assets |
+|---|---|---|
+| ![](docs/screenshots/05-batch.png) | ![](docs/screenshots/06-batch-controle.png) | ![](docs/screenshots/07-overzicht.png) |
 
 Mobiel: [kiezen](docs/screenshots/m01-templates.png) ·
 [invullen](docs/screenshots/m02-invullen.png) ·
@@ -57,6 +61,12 @@ make docker-build
 make docker-run              # http://localhost:3000
 ```
 
+Of mét persistente joblijst:
+
+```bash
+make compose-up              # app + Redis
+```
+
 De image draait als non-root en heeft geen Node-toolchain op de host nodig.
 `GET /api/health` vertelt of de app draait én of de Storyteq-config compleet is:
 
@@ -64,6 +74,49 @@ De image draait als non-root en heeft geen Node-toolchain op de host nodig.
 curl -s localhost:3000/api/health
 # {"status":"ok","storyteq":"configured","region":"europe-west1","uptime":12}
 ```
+
+---
+
+## Meerdere tegelijk, en niet hoeven wachten
+
+Twee dingen die de opdracht niet vroeg maar die de app pas echt bruikbaar maken:
+
+**Honderd assets uit één Excel-bestand.** Je haalt bij een template een
+invulbestand op — één kolom per veld, verplichte velden met een `*`, en een
+ingevulde voorbeeldregel. Je vult hem in Excel, leest hem hier weer in, en ziet
+per regel of hij klopt vóórdat er iets gemaakt wordt. Een keuzeveld vul je in met
+het label dat je in het formulier ook ziet ("Green"); de UUID die Storyteq wil
+zoeken we zelf op. Fout ingevuld? Dan staat er wat er mis is én welke keuzes er
+wél zijn.
+
+De export gebruikt een puntkomma en een BOM, want anders zet Excel in Nederland
+alles in één kolom en maakt het er Latin-1 van. Bij het inlezen kijken we gewoon
+welk scheidingsteken het vaakst voorkomt, dus een komma-CSV uit een ander
+programma werkt ook.
+
+**De wachtrij.** Je hoeft niet op het statusscherm te blijven staan. Elke render
+die je start komt in "jouw assets"; een achtergrond-poller bewaakt ze op élke
+pagina en je krijgt een melding zodra er een klaar is — een toast als het tabblad
+open staat, een systeemmelding als dat niet zo is. Toestemming daarvoor vragen we
+pas op het moment dat je een batch start, niet ongevraagd bij het laden.
+
+Die lijst leeft standaard in `localStorage`: geen database, geen account. Zet je
+`REDIS_URL`, dan spiegelt hij bovendien naar de server onder een anonieme
+sessie-cookie, zodat je overzicht het legen van je browseropslag overleeft:
+
+```bash
+make compose-up      # app + Redis
+curl -s localhost:3000/api/health   # ... "jobs":"redis"
+```
+
+Is Redis er niet, of valt hij weg? Dan merkt de gebruiker daar niets van — de
+browser blijft de bron. Er staat trouwens geen render-inhoud in Redis, alleen
+media-id's en een label; de assets zelf blijven bij Storyteq.
+
+Diezelfde naad is ook de plek waar Storyteq's **webhooks** zouden landen: zonder
+server-side opslag is er nergens om "deze render is klaar" te bewaren, met wel.
+Dat is nu niet gebouwd — het vraagt een publiek bereikbare URL, en de opdracht
+vroeg expliciet om pollen.
 
 ---
 
@@ -91,7 +144,8 @@ achtergrond staat.
 |---|---|
 | **Next.js (App Router, TypeScript)** | Gevraagd in de opdracht. De route handlers zijn hier meteen de proxy-laag, dus er is geen aparte backend nodig. |
 | **Route handlers als proxy** | Drie vliegen: de key blijft server-side, alle traffic komt langs één punt (discovery-logging), en de download kan een eigen `Content-Disposition` krijgen zodat hij écht met één klik binnenkomt. |
-| **TanStack Query, geen state manager** | Alles in deze app *is* server state: templates, de aanmaak-actie, de renderstatus. Het pollen is één regel — `refetchInterval` als functie van de status, die vanzelf stopt bij `finished`/`failed`. Er is geen client state die Zustand of Redux zou rechtvaardigen: één wizard-stap (die in de URL staat) en de formuliervelden. |
+| **TanStack Query voor server state** | Templates, de aanmaak-actie en de renderstatus zijn allemaal server state. Het pollen is één regel — `refetchInterval` als functie van de status, die vanzelf stopt bij `finished`/`failed`. |
+| **Eigen mini-store voor de joblijst, geen state manager** | De joblijst is de énige echte client state in deze app, en het is één array met vijf operaties. Dat is een `useSyncExternalStore`-store van honderd regels (`lib/jobs.ts`), niet Zustand of Redux. Zie ook "De wachtrij" hieronder. |
 | **shadcn/ui primitives, geen blocks** | Alleen button, input, textarea, card, progress, skeleton, label en sonner — de bouwstenen, met een eigen theme erop. Bewust géén sidebar- of dashboard-blocks: de opdracht vraagt letterlijk om geen technisch dashboard. |
 | **Tailwind v4** | Theme als CSS-variabelen, geen config-bestand nodig. |
 | **Zod op de route handlers** | Een API die we niet volledig kennen levert onbetrouwbare responses. Loose schemas: onbekende velden mogen erbij, ontbrekende velden breken de app niet. |
@@ -195,9 +249,10 @@ volstaat ruim voor renders van tientallen seconden.
   stap — dat is voor de eindgebruiker veel natuurlijker.
 - **Presets per merk.** Kleuren, logo en CTA's die al goed staan, zodat er nog
   minder in te vullen valt.
-- **Batch-generatie.** De API ondersteunt het; de opdracht vroeg om één asset.
-- **Webhooks in plaats van pollen** voor lange renders, met een e-mail of
-  push zodra hij klaar is — dan hoeft het tabblad niet open te blijven.
+- **Webhooks in plaats van pollen.** De haak ligt klaar (zie hierboven); het
+  vraagt alleen een publiek bereikbare URL.
+- **Batch-status in één oogopslag** — nu zie je per asset of hij klaar is, maar
+  niet "43 van de 60 klaar" met een knop om alles als zip te downloaden.
 - **Paginatie op templates**, zodra een account er meer heeft dan één pagina.
   De parameter is bevestigd (`?page=N`, Laravel-stijl), alleen nog niet gebruikt.
 - **Templates filteren of groeperen.** Nu komen ze allemaal in één grid; met
@@ -210,10 +265,13 @@ volstaat ruim voor renders van tientallen seconden.
 
 ```
 app/
-  page.tsx                     stap 1 — templates
-  maken/[templateId]/          stap 2 — invullen
-  asset/[assetId]/             stap 3 en 4 — wachten en downloaden
-  api/                         de proxy (templates, thumbnails, assets, download, health)
+  page.tsx                     templates kiezen
+  maken/[templateId]/          invullen
+  maken/[templateId]/batch/    meerdere tegelijk via CSV
+  asset/[assetId]/             wachten en downloaden
+  batch/                       template kiezen voor de CSV-flow
+  overzicht/                   jouw assets: wat loopt en wat klaar is
+  api/                         de proxy (templates, thumbnails, assets, download, jobs, health)
 components/                    UI, incl. shadcn-primitives in components/ui/
 lib/
   config.ts                    env inlezen en valideren
@@ -225,6 +283,11 @@ lib/
   template-cache.ts            thumbnail-URL's uit de lijst-call
   errors.ts                    één foutentaxonomie, menselijke teksten
   queries.ts                   TanStack Query hooks incl. polling
+  history.ts                   duurverwachting + voorbeelden uit eerdere renders
+  csv.ts                       invulbestand maken en inlezen
+  jobs.ts                      jouw joblijst (localStorage, optioneel naar Redis)
+  job-store.server.ts          de Redis-kant daarvan
+  redis.ts / session.ts        optionele persistentie, anonieme sessie
 docs/
   api-discovery.md             wat we over de API ontdekten
   specs/                       de opgehaalde OpenAPI-spec

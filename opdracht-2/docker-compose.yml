@@ -1,0 +1,37 @@
+# Optionele opstelling mét persistente joblijst.
+#
+#   docker compose up --build
+#
+# Zonder Redis werkt de app precies zo, alleen leeft "jouw assets" dan
+# uitsluitend in localStorage van de browser. Dan volstaat:
+#   make docker-build && make docker-run
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.local
+    environment:
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  redis:
+    image: redis:8-alpine
+    # Alleen bereikbaar voor de app; niet naar buiten open.
+    command: ["redis-server", "--save", "60", "1", "--appendonly", "no"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  redis-data:

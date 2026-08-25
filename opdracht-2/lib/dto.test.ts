@@ -2,12 +2,14 @@ import { describe, expect, it } from "vitest";
 
 import {
   downloadSourceFor,
+  isFieldValid,
   fieldKind,
   humanizeName,
   previewSourceFor,
   toAssetState,
   toTemplateDetail,
 } from "./dto";
+import type { FormField } from "./dto";
 import { mediaSchema, templateSchema } from "./schemas";
 
 describe("fieldKind", () => {
@@ -195,5 +197,44 @@ describe("toTemplateDetail — velden die niet in de spec staan", () => {
       parameters: [{ name: "x", type: "enum", meta: { values: [] } }],
     });
     expect(toTemplateDetail(zonder).fields[0].kind).toBe("text");
+  });
+});
+
+describe("isFieldValid", () => {
+  const field = (over: Partial<FormField>): FormField => ({
+    name: "x",
+    label: "X",
+    kind: "text",
+    group: "tekst",
+    rawType: null,
+    required: false,
+    initialValue: "",
+    ...over,
+  });
+
+  it("noemt een leeg veld nooit goed ingevuld", () => {
+    expect(isFieldValid(field({}), "   ")).toBe(false);
+  });
+
+  it("controleert kleur, link en getal op vorm", () => {
+    expect(isFieldValid(field({ kind: "color" }), "#1a2b3c")).toBe(true);
+    expect(isFieldValid(field({ kind: "color" }), "blauw")).toBe(false);
+    expect(isFieldValid(field({ kind: "image" }), "https://x.nl/a.png")).toBe(true);
+    expect(isFieldValid(field({ kind: "image" }), "plaatje.png")).toBe(false);
+    expect(isFieldValid(field({ kind: "number" }), "12")).toBe(true);
+    expect(isFieldValid(field({ kind: "number" }), "twaalf")).toBe(false);
+  });
+
+  it("accepteert bij een keuze alleen een bestaande optie", () => {
+    const keuze = field({
+      kind: "select",
+      options: [{ label: "Groen", value: "parameterValue-1" }],
+    });
+    expect(isFieldValid(keuze, "parameterValue-1")).toBe(true);
+    expect(isFieldValid(keuze, "Groen")).toBe(false);
+  });
+
+  it("laat gewone tekst met rust", () => {
+    expect(isFieldValid(field({}), "Zomer bij ACT")).toBe(true);
   });
 });

@@ -7,13 +7,22 @@ const nextConfig: NextConfig = {
    */
   output: "standalone",
 
-  /**
-   * Alle Storyteq-media loopt door onze eigen proxy (/api/assets/[id]/download),
-   * dus we hoeven geen externe hosts toe te staan. Blijft zo ook werken als
-   * Storyteq morgen een ander CDN-domein gebruikt.
-   */
   images: {
+    /**
+     * Alle Storyteq-media loopt door onze eigen proxy, dus er hoeft geen enkele
+     * externe host toegestaan te worden. Blijft zo ook werken als Storyteq
+     * morgen een ander CDN-domein gebruikt.
+     */
     remotePatterns: [],
+
+    /**
+     * Next 16 wil dat lokale bronnen mét query-string expliciet toegestaan
+     * worden. Dit zijn precies de twee proxy-routes die beeld serveren.
+     */
+    localPatterns: [
+      { pathname: "/api/templates/**", search: "" },
+      { pathname: "/api/assets/**", search: "?variant=thumbnail" },
+    ],
   },
 };
 

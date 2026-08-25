@@ -1,32 +1,42 @@
 "use client";
 
-import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, Loader2, Sparkles, Table2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { AppShell } from "@/components/app-shell";
 import { ErrorState } from "@/components/feedback";
 import { FieldInput } from "@/components/field-input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ClientError } from "@/lib/client";
-import { useCreateAsset, useTemplate } from "@/lib/queries";
-import type { TemplateDetail } from "@/lib/dto";
+import { isFieldValid, type FormField, type TemplateDetail } from "@/lib/dto";
+import { addJobs } from "@/lib/jobs";
+import { useCreateAsset, useTemplate, useTemplateHistory } from "@/lib/queries";
 
 /** Stap 2: invullen. Alleen de velden die de template zelf aandraagt. */
 export function AssetForm({ templateId }: { templateId: string }) {
   const { data: template, isPending, isError, error, refetch } = useTemplate(templateId);
 
-  if (isPending) return <FormSkeleton />;
+  if (isPending) {
+    return (
+      <AppShell>
+        <FormSkeleton />
+      </AppShell>
+    );
+  }
 
   if (isError) {
     return (
-      <ErrorState
-        title="Deze template kon niet geladen worden"
-        error={error}
-        onRetry={() => void refetch()}
-      />
+      <AppShell>
+        <ErrorState
+          title="Deze template kon niet geladen worden"
+          error={error}
+          onRetry={() => void refetch()}
+        />
+      </AppShell>
     );
   }
 
@@ -38,6 +48,7 @@ export function AssetForm({ templateId }: { templateId: string }) {
 function TemplateForm({ template }: { template: TemplateDetail }) {
   const router = useRouter();
   const create = useCreateAsset();
+  const history = useTemplateHistory(template.id);
 
   const [values, setValues] = useState<Record<string, string>>(() =>
     Object.fromEntries(template.fields.map((f) => [f.name, f.initialValue])),
@@ -53,6 +64,14 @@ function TemplateForm({ template }: { template: TemplateDetail }) {
   );
 
   const noFields = template.fields.length === 0;
+
+  /**
+   * Bij een keuzeveld tonen we een eerdere render als voorbeeld. Dat werkt
+   * alleen als die render zélf het beeld is: bij een video is de thumbnail de
+   * posterframe, en die is voor elke keuze hetzelfde — vier identieke plaatjes
+   * naast vier verschillende opties helpen niemand.
+   */
+  const showExamples = template.mediaKind !== "video";
   const hasContent = Object.values(values).some((v) => v.trim() !== "");
   const canSubmit = noFields || (missing.length === 0 && hasContent);
 
@@ -90,7 +109,19 @@ function TemplateForm({ template }: { template: TemplateDetail }) {
     create.mutate(
       { templateId: template.id, parameters },
       {
-        onSuccess: (asset) => router.push(`/asset/${encodeURIComponent(asset.id)}`),
+        onSuccess: (asset) => {
+          // Ook een losse render komt in je overzicht; zo hoef je nooit op het
+          // wachtscherm te blijven staan.
+          addJobs([
+            {
+              id: asset.id,
+              templateId: template.id,
+              templateName: template.name,
+              label: firstTextValue(template.fields, values) || template.name,
+            },
+          ]);
+          router.push(`/asset/${encodeURIComponent(asset.id)}`);
+        },
         onError: (err) => {
           if (err instanceof ClientError && err.fields) {
             // Storyteq geeft fouten per parameter terug; die horen bij het veld.
@@ -116,102 +147,155 @@ function TemplateForm({ template }: { template: TemplateDetail }) {
     );
   }
 
-  return (
-    <div className="mx-auto max-w-2xl">
+  const formId = "asset-form";
+
+  const actions = (
+    <div className="flex items-center gap-3">
       <Link
         href="/"
-        className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1.5 text-sm transition-colors"
+        aria-label="Andere template kiezen"
+        className="text-muted-foreground hover:text-foreground hover:border-foreground/25 border-border flex size-10 shrink-0 items-center justify-center rounded-xl border transition-colors"
       >
         <ArrowLeft className="size-4" />
-        Andere template kiezen
       </Link>
 
-      <div className="mb-8 space-y-2">
-        <h1 className="font-heading text-3xl font-bold sm:text-4xl">{template.name}</h1>
-        <p className="text-muted-foreground">
-          {noFields
-            ? "Deze template heeft geen velden — je kunt hem meteen maken."
-            : "Vul in wat er in je asset moet komen te staan."}
+      <div className="min-w-0 flex-1">
+        <p className="font-heading truncate text-base font-semibold">{template.name}</p>
+        <p className="text-muted-foreground truncate text-xs">
+          {missing.length > 0
+            ? `Nog ${missing.length} verplicht ${missing.length === 1 ? "veld" : "velden"}`
+            : durationHint(history.data?.estimate?.medianSeconds ?? null)}
         </p>
       </div>
 
-      <form onSubmit={onSubmit} noValidate>
-        <div className="border-border bg-card shadow-paper space-y-6 rounded-2xl border p-6 sm:p-8">
-          {template.fields.map((field) => (
-            <FieldInput
-              key={field.name}
-              field={field}
-              value={values[field.name] ?? ""}
-              error={fieldErrors[field.name]}
-              onChange={(value) => setValue(field.name, value)}
-            />
-          ))}
+      <Button
+        type="submit"
+        form={formId}
+        size="lg"
+        disabled={create.isPending || !canSubmit}
+        className="h-12 shrink-0 px-6 text-base"
+      >
+        {create.isPending ? (
+          <>
+            <Loader2 className="size-4 animate-spin" />
+            <span className="hidden sm:inline">Versturen…</span>
+          </>
+        ) : (
+          <>
+            <Sparkles className="size-4" />
+            <span className="hidden sm:inline">Maak mijn asset</span>
+            <span className="sm:hidden">Maken</span>
+          </>
+        )}
+      </Button>
+    </div>
+  );
+
+  return (
+    <AppShell actions={actions}>
+      <div className="mx-auto max-w-2xl">
+        {/* De naam staat al in de balk hierboven; hier alleen voor schermlezers. */}
+        <h1 className="sr-only">{template.name}</h1>
+
+        <div className="mb-8 flex flex-wrap items-baseline justify-between gap-3">
+          <p className="text-muted-foreground text-lg text-balance">
+            {noFields
+              ? "Deze template heeft geen velden — je kunt hem meteen maken."
+              : "Vul in wat er in je asset moet komen te staan."}
+          </p>
+          {!noFields && (
+            <Link
+              href={`/maken/${encodeURIComponent(template.id)}/batch`}
+              className="text-primary hover:text-primary/80 flex shrink-0 items-center gap-1.5 text-sm font-medium transition-colors"
+            >
+              <Table2 className="size-4" />
+              Meerdere tegelijk
+            </Link>
+          )}
+        </div>
+
+        <form id={formId} onSubmit={onSubmit} noValidate>
+          <div className="divide-border divide-y">
+            {groupFields(template.fields).map((group, index) => (
+              <div key={index} className="space-y-6 py-7 first:pt-0 last:pb-0">
+                {group.map((field) => (
+                  <FieldInput
+                    key={field.name}
+                    field={field}
+                    value={values[field.name] ?? ""}
+                    error={fieldErrors[field.name]}
+                    valid={isFieldValid(field, values[field.name] ?? "")}
+                    examples={
+                      showExamples ? history.data?.optionExamples?.[field.name] : undefined
+                    }
+                    onChange={(value) => setValue(field.name, value)}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
 
           {noFields && (
             <p className="text-muted-foreground text-sm">
               Er valt hier niets in te vullen.
             </p>
           )}
-        </div>
+        </form>
+      </div>
+    </AppShell>
+  );
+}
 
-        <div className="mt-6 flex flex-col items-center gap-2">
-          <Button
-            type="submit"
-            size="lg"
-            disabled={create.isPending || !canSubmit}
-            className="w-full sm:w-auto sm:min-w-56"
-          >
-            {create.isPending ? (
-              <>
-                <Loader2 className="size-4 animate-spin" />
-                Bezig met versturen…
-              </>
-            ) : (
-              <>
-                <Sparkles className="size-4" />
-                Maak mijn asset
-              </>
-            )}
-          </Button>
-
-          <p className="text-muted-foreground text-xs" aria-live="polite">
-            {missing.length > 0
-              ? `Nog ${missing.length} verplicht ${missing.length === 1 ? "veld" : "velden"} in te vullen.`
-              : !hasContent && !noFields
-                ? "Vul eerst minstens één veld in."
-                : durationHint(template.estimatedSeconds)}
-          </p>
-        </div>
-      </form>
-    </div>
+/** Waar de gebruiker deze render aan herkent in het overzicht. */
+function firstTextValue(fields: FormField[], values: Record<string, string>) {
+  return (
+    fields
+      .filter((field) => field.kind === "text" || field.kind === "longtext")
+      .map((field) => values[field.name]?.trim())
+      .find(Boolean) ?? ""
   );
 }
 
 /**
- * `processing_time` van de template is de rendertijd — de wachtrij zit er niet
- * bij. In de praktijk duurde een render van 94 seconden ruim drie minuten van
- * knop tot bestand. We beloven dus niets preciezer dan we waar kunnen maken.
+ * Groepeert *opeenvolgende* velden van dezelfde soort. Zo krijgt het formulier
+ * ritme — teksten bij teksten, keuzes bij keuzes — zonder dat de volgorde die de
+ * template zelf meegeeft (`order`) door elkaar gehaald wordt.
  */
-function durationHint(seconds: number | null): string {
-  if (seconds && seconds > 120) return "Dit kan een paar minuten duren.";
-  return "Dit duurt meestal één tot drie minuten.";
+function groupFields(fields: FormField[]): FormField[][] {
+  const groups: FormField[][] = [];
+  for (const field of fields) {
+    const last = groups.at(-1);
+    if (last && last[0].group === field.group) last.push(field);
+    else groups.push([field]);
+  }
+  return groups;
+}
+
+/**
+ * De verwachting komt uit de eigen historie van de template (mediaan over
+ * eerdere renders), niet uit `processing_time` — dat veld telt de wachtrij niet
+ * mee en was in de praktijk minder dan de helft van de echte duur.
+ */
+function durationHint(medianSeconds: number | null): string {
+  if (!medianSeconds) return "Dit duurt meestal één tot drie minuten.";
+  const minutes = Math.round(medianSeconds / 60);
+  if (minutes <= 1) return "Meestal binnen een minuut klaar.";
+  return `Meestal binnen ${minutes} minuten klaar.`;
 }
 
 function FormSkeleton() {
   return (
     <div className="mx-auto max-w-2xl">
-      <Skeleton className="mb-6 h-4 w-40" />
       <Skeleton className="mb-3 h-9 w-2/3" />
       <Skeleton className="mb-8 h-5 w-1/2" />
-      <div className="border-border bg-card space-y-6 rounded-2xl border p-6 sm:p-8">
-        {Array.from({ length: 4 }, (_, i) => (
+      <div className="space-y-7">
+        {Array.from({ length: 5 }, (_, i) => (
           <div key={i} className="space-y-2">
             <Skeleton className="h-4 w-28" />
-            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-12 w-full rounded-xl" />
           </div>
         ))}
       </div>
-      <Skeleton className="mx-auto mt-6 h-11 w-56" />
     </div>
   );
 }

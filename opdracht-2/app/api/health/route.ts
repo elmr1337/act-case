@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { getConfig } from "@/lib/config";
+import { persistenceEnabled } from "@/lib/job-store.server";
 
 /**
  * Healthcheck voor Docker. Vertelt of de app draait én of de Storyteq-config
@@ -21,6 +22,8 @@ export function GET() {
     status: "ok",
     storyteq,
     region,
+    // "browser" = joblijst alleen in localStorage; "redis" = ook server-side.
+    jobs: persistenceEnabled() ? "redis" : "browser",
     uptime: Math.round(process.uptime()),
   });
 }

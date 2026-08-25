@@ -5,9 +5,10 @@
 ## Context
 
 ACT.agency praktijkcase, opdracht 2: een Next.js-app waarmee iemand zónder
-technische achtergrond binnen een minuut een asset genereert en downloadt via de
-Storyteq API. Vier stappen, lineair, geen dashboard. Het volledige werkplan staat
-in [../PLAN-2.md](../PLAN-2.md) — volg de fases en stop bij elke 🧑 HUMAN-checkpoint.
+technische achtergrond een asset genereert en downloadt via de Storyteq API —
+één tegelijk of honderd via een CSV. Lineaire flow, geen dashboard. Het
+oorspronkelijke werkplan staat in [../PLAN-2.md](../PLAN-2.md); batch, wachtrij
+en de optionele Redis-laag zijn er later bij gekomen op verzoek van Elmar.
 
 ## Commando's
 
@@ -19,6 +20,7 @@ make test           # vitest — zod-parsing van API-responses
 make explore        # Storyteq API verkennen (schrijft naar docs/discovery/)
 make docker-build   # image bouwen
 make docker-run     # image draaien met --env-file .env.local
+make compose-up     # app + Redis (persistente joblijst)
 ```
 
 Config via `opdracht-2/.env.local` (template: `.env.example`).
@@ -30,6 +32,9 @@ browser ──► app/api/*  (route handlers = proxy)  ──► api.{region}.st
             lib/storyteq.ts     enige plek met de token (server-only)
             lib/dto.ts          vertaalt API-vorm naar UI-vorm
             lib/queries.ts      TanStack Query hooks (incl. polling)
+
+jouw joblijst:  lib/jobs.ts (localStorage)  ─┬─► niets meer, standaard
+                                             └─► /api/jobs ──► Redis, als REDIS_URL gezet is
 ```
 
 ## Conventies
@@ -46,7 +51,12 @@ browser ──► app/api/*  (route handlers = proxy)  ──► api.{region}.st
 - **Zod blijft loose.** De API mag velden toevoegen zonder dat de app breekt.
   Nieuwe aannames krijgen een test in `lib/schemas.test.ts` of `lib/dto.test.ts`.
 - **UI-taal is Nederlands en jargonvrij.** "Template", "asset" en "genereren" zijn
-  het maximum; geen statuscodes, geen veldnamen uit de API.
+  het maximum; geen statuscodes, geen veldnamen uit de API (die zijn UUID's).
+- **Local-first.** De joblijst werkt altijd zonder server-opslag; Redis is een
+  optionele spiegel. Faalt de server, dan merkt de gebruiker dat niet.
+- **Beloof geen tijden die we niet kunnen onderbouwen.** De verwachting in stap 3
+  komt uit de eigen historie van de template (`lib/history.ts`), niet uit
+  `processing_time` — dat veld telt de wachtrij niet mee.
 
 ## Nooit
 

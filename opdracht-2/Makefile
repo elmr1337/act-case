@@ -49,6 +49,15 @@ docker-run: ## Image draaien met .env.local als runtime-env
 		--name $(IMAGE) \
 		$(IMAGE)
 
+.PHONY: compose-up
+compose-up: ## App + Redis (persistente joblijst) via docker compose
+	@test -f .env.local || { echo "Maak eerst .env.local (cp .env.example .env.local)"; exit 1; }
+	docker compose up --build
+
+.PHONY: compose-down
+compose-down: ## Compose-opstelling stoppen
+	docker compose down
+
 .PHONY: docker-health
 docker-health: ## Healthcheck van de draaiende container
 	curl -fsS http://localhost:$(PORT)/api/health && echo

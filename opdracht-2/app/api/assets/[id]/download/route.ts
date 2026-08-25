@@ -1,7 +1,7 @@
 import { cacheMedia, getCachedMedia } from "@/lib/asset-cache";
 import { getConfig } from "@/lib/config";
 import { AppError, handler } from "@/lib/api";
-import { fileNameFor, sourceUrlFor } from "@/lib/dto";
+import { fileNameFor, sourceUrlFor, type SourceVariant } from "@/lib/dto";
 import { getMedia } from "@/lib/storyteq";
 import { normalizeStatus } from "@/lib/schemas";
 
@@ -20,11 +20,11 @@ import { normalizeStatus } from "@/lib/schemas";
 export const GET = handler(
   async (request: Request, ctx: { params: Promise<{ id: string }> }) => {
     const { id } = await ctx.params;
-    // `preview` = de CDN-URL in de speler; anders het download-endpoint.
-    const variant =
-      new URL(request.url).searchParams.get("variant") === "preview"
-        ? "preview"
-        : "download";
+    // `preview` = de CDN-URL in de speler, `thumbnail` = alleen het stilstaande
+    // beeld (voor voorbeelden bij keuzevelden), anders het download-endpoint.
+    const requested = new URL(request.url).searchParams.get("variant");
+    const variant: SourceVariant =
+      requested === "preview" || requested === "thumbnail" ? requested : "download";
 
     const media = await resolveMedia(id);
     const source = sourceUrlFor(media, variant);
@@ -53,14 +53,18 @@ export const GET = handler(
     );
     headers.set(
       "Content-Disposition",
-      `${variant === "preview" ? "inline" : "attachment"}; filename="${fileName}"`,
+      `${variant === "download" ? "attachment" : "inline"}; filename="${fileName}"`,
     );
     // Doorgeven zodat de video-player kan spoelen.
     for (const key of ["content-length", "content-range", "accept-ranges", "etag"]) {
       const value = upstream.headers.get(key);
       if (value) headers.set(key, value);
     }
-    headers.set("Cache-Control", "private, max-age=300");
+    // Thumbnails van eerdere renders veranderen niet meer.
+    headers.set(
+      "Cache-Control",
+      variant === "thumbnail" ? "private, max-age=3600" : "private, max-age=300",
+    );
 
     return new Response(upstream.body, { status: upstream.status, headers });
   },

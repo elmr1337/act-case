@@ -9,6 +9,7 @@ import {
 
 import { api, ClientError } from "./client";
 import type { AssetState, TemplateDetail, TemplateSummary } from "./dto";
+import type { TemplateHistory } from "./history";
 
 /**
  * Alles in deze app is server state: templates, de aanmaak-actie, en de status
@@ -19,6 +20,7 @@ import type { AssetState, TemplateDetail, TemplateSummary } from "./dto";
 export const keys = {
   templates: ["templates"] as const,
   template: (id: string) => ["template", id] as const,
+  history: (id: string) => ["template-history", id] as const,
   asset: (id: string) => ["asset", id] as const,
 };
 
@@ -44,6 +46,21 @@ export function useTemplate(id: string | null): UseQueryResult<TemplateDetail> {
       return template;
     },
     staleTime: 60_000,
+  });
+}
+
+/**
+ * Wat deze template in de praktijk doet: hoe lang een render duurt en hoe
+ * eerdere keuzes eruitzagen. Aanvullend — de flow werkt ook zonder, dus deze
+ * query wordt niet opnieuw geprobeerd en gooit nooit een foutscherm op.
+ */
+export function useTemplateHistory(id: string | null): UseQueryResult<TemplateHistory> {
+  return useQuery({
+    queryKey: keys.history(id ?? ""),
+    enabled: Boolean(id),
+    queryFn: () => api<TemplateHistory>(`/api/templates/${encodeURIComponent(id!)}/history`),
+    staleTime: 10 * 60_000,
+    retry: false,
   });
 }
 

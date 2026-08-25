@@ -16,19 +16,18 @@ import { AppShell } from "@/components/app-shell";
 import { ErrorState } from "@/components/feedback";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { useAssetStatus } from "@/lib/queries";
+import { useAssetStatus, useTemplateHistory } from "@/lib/queries";
 import type { AssetPhase, AssetState } from "@/lib/dto";
+import type { DurationEstimate } from "@/lib/history";
 
 /** Stap 3 en 4 wonen op dezelfde pagina: het wachten gaat vanzelf over in het resultaat. */
 export function AssetStatusPage({ assetId }: { assetId: string }) {
   const { data, isPending, isError, error, refetch } = useAssetStatus(assetId);
 
-  const step = data?.done ? "done" : "make";
-
   return (
-    <AppShell step={step}>
+    <AppShell>
       {isPending ? (
-        <WaitingScreen phase="queued" elapsed={0} />
+        <WaitingScreen phase="queued" elapsed={0} estimate={null} />
       ) : isError ? (
         <ErrorState
           title="We konden de status niet ophalen"
@@ -46,92 +45,86 @@ export function AssetStatusPage({ assetId }: { assetId: string }) {
   );
 }
 
-const PHASE_COPY: Record<AssetPhase, { title: string; body: string }> = {
-  queued: {
-    title: "In de wachtrij",
-    body: "Je asset staat klaar en is zo aan de beurt. Dit kan een paar minuten duren.",
-  },
-  rendering: {
-    title: "Wordt gemaakt",
-    body: "De beelden en teksten worden nu samengevoegd.",
-  },
-  uploading: {
-    title: "Bijna klaar",
-    body: "De laatste hand wordt gelegd.",
-  },
-  unknown: {
-    title: "Bezig",
-    body: "We houden het voor je in de gaten.",
-  },
-  finished: { title: "Klaar", body: "" },
-  failed: { title: "Mislukt", body: "" },
+/** Waar de render is. Eén regel, geen eigen kop — de kop blijft staan. */
+const PHASE_COPY: Record<AssetPhase, string> = {
+  queued: "Hij staat in de rij bij Storyteq en is zo aan de beurt.",
+  rendering: "De beelden en teksten worden nu samengevoegd.",
+  uploading: "De laatste hand wordt gelegd.",
+  unknown: "We houden het voor je in de gaten.",
+  finished: "",
+  failed: "",
 };
 
 function PollingScreen({ asset }: { asset: AssetState }) {
-  const elapsed = useElapsedSeconds();
+  const history = useTemplateHistory(asset.templateId);
+  const elapsed = useElapsedSeconds(asset.startedAt);
 
   return (
-    <WaitingScreen phase={asset.phase} elapsed={elapsed} target={asset.progress} />
+    <WaitingScreen
+      phase={asset.phase}
+      elapsed={elapsed}
+      estimate={history.data?.estimate ?? null}
+    />
   );
 }
 
-/** Hoelang de gebruiker al wacht. Loopt door over alle fasen heen. */
-function useElapsedSeconds() {
-  const [elapsed, setElapsed] = useState(0);
+/**
+ * Hoelang de render al loopt. Gebaseerd op `created_at` van Storyteq, dus de
+ * teller klopt ook als je de pagina ververst of de link later opent.
+ */
+function useElapsedSeconds(startedAt: string | null) {
+  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    const started = Date.now();
-    const timer = setInterval(
-      () => setElapsed(Math.round((Date.now() - started) / 1000)),
-      1000,
-    );
+    const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  return elapsed;
+  const start = startedAt ? Date.parse(startedAt.replace(" ", "T") + "Z") : NaN;
+  if (!Number.isFinite(start)) return 0;
+  return Math.max(0, Math.round((now - start) / 1000));
 }
 
 function WaitingScreen({
   phase,
   elapsed,
-  target = 8,
+  estimate,
 }: {
   phase: AssetPhase;
   elapsed: number;
-  target?: number;
+  estimate: DurationEstimate | null;
 }) {
-  const copy = PHASE_COPY[phase];
-  // Een echte render deed er ruim drie minuten over; pas daarna is "langer dan
-  // gebruikelijk" ook echt waar.
-  const slow = elapsed > 240;
+  // Het blijft van begin tot eind hetzelfde: je asset wordt gemaakt. De fase
+  // eronder vertelt waar hij is, zonder dat de kop steeds verspringt.
+  const overdue = estimate !== null && elapsed > estimate.p90Seconds;
 
   return (
     <div className="mx-auto flex max-w-lg flex-col items-center py-8 text-center sm:py-16">
-      <span className="bg-progress/15 text-progress relative flex size-16 items-center justify-center rounded-full">
-        <span className="bg-progress/20 absolute inset-0 animate-ping rounded-full opacity-60" />
-        <Loader2 className="relative size-7 animate-spin" strokeWidth={2.5} />
+      <span className="bg-progress/15 text-progress flex size-16 items-center justify-center rounded-full">
+        <Loader2 className="size-7 animate-spin" strokeWidth={2.5} />
       </span>
 
       <h1 className="font-heading mt-7 text-3xl font-bold sm:text-4xl">
-        {copy.title}
+        Je asset wordt gemaakt
       </h1>
-      <p className="text-muted-foreground mt-2.5">{copy.body}</p>
+      <p className="text-muted-foreground mt-2.5 text-balance">
+        {PHASE_COPY[phase]}
+      </p>
 
       <div className="mt-8 w-full space-y-3">
-        {/* De key zorgt dat de kruip opnieuw begint bij elke nieuwe fase. */}
-        <CreepingProgress key={phase} target={target} />
-        <p
-          className="text-muted-foreground text-sm tabular-nums"
-          aria-live="polite"
-          aria-atomic
-        >
-          {elapsed > 0 ? `${elapsed} seconden bezig` : "Aan het starten…"}
+        <Progress
+          value={progressFor(phase, elapsed, estimate)}
+          className="h-2 [&>div]:bg-progress [&>div]:transition-all [&>div]:duration-700"
+          aria-label="Voortgang"
+        />
+        <p className="text-foreground text-sm font-medium" aria-live="polite" aria-atomic>
+          {remainingCopy(elapsed, estimate, overdue)}
         </p>
       </div>
 
-      <p className="text-muted-foreground mt-8 max-w-sm text-sm">
-        {slow
-          ? "Het duurt wat langer dan gebruikelijk, maar hij is er nog mee bezig. Je kunt dit tabblad gerust open laten staan."
+      <p className="text-muted-foreground mt-8 max-w-sm text-sm text-balance">
+        {overdue
+          ? "Hij is er nog mee bezig. Je kunt dit tabblad gerust open laten staan."
           : "Je kunt dit tabblad open laten staan — we laten het weten zodra het klaar is."}
       </p>
     </div>
@@ -139,25 +132,47 @@ function WaitingScreen({
 }
 
 /**
- * Storyteq geeft geen percentage terug, alleen een fase. Om te voorkomen dat de
- * balk minutenlang stilstaat kruipt hij binnen elke fase langzaam vooruit —
- * maar nooit voorbij het punt dat de volgende fase zou rechtvaardigen.
+ * Storyteq geeft geen percentage, alleen een fase. De balk loopt daarom mee met
+ * de tijd, afgezet tegen wat deze template in de praktijk nodig heeft, met de
+ * fase als ondergrens zodat hij nooit terugvalt. Nooit voorbij 96%: die laatste
+ * paar procent zijn niet van ons om te beloven.
  */
-function CreepingProgress({ target }: { target: number }) {
-  const [drift, setDrift] = useState(0);
+function progressFor(
+  phase: AssetPhase,
+  elapsed: number,
+  estimate: DurationEstimate | null,
+): number {
+  const floor = PHASE_FLOOR[phase];
+  if (!estimate) return floor;
+  const byTime = (elapsed / Math.max(estimate.medianSeconds, 1)) * 90;
+  return Math.round(Math.min(96, Math.max(floor, byTime)));
+}
 
-  useEffect(() => {
-    const timer = setInterval(() => setDrift((d) => d + (22 - d) * 0.08), 900);
-    return () => clearInterval(timer);
-  }, []);
+const PHASE_FLOOR: Record<AssetPhase, number> = {
+  queued: 8,
+  rendering: 45,
+  uploading: 85,
+  finished: 100,
+  failed: 100,
+  unknown: 20,
+};
 
-  return (
-    <Progress
-      value={Math.min(Math.round(target + drift), 96)}
-      className="h-2 [&>div]:bg-progress [&>div]:transition-all [&>div]:duration-700"
-      aria-label="Voortgang"
-    />
-  );
+/**
+ * Een verwachting geven mag alleen als we hem kunnen onderbouwen. Zonder
+ * historie zeggen we niets over de resterende tijd.
+ */
+function remainingCopy(
+  elapsed: number,
+  estimate: DurationEstimate | null,
+  overdue: boolean,
+): string {
+  if (!estimate) return "Dit duurt meestal één tot drie minuten.";
+  if (overdue) return "Duurt langer dan gewoonlijk.";
+
+  const remaining = estimate.medianSeconds - elapsed;
+  if (remaining <= 20) return "Bijna klaar…";
+  if (remaining < 90) return "Nog ongeveer een minuut.";
+  return `Nog ongeveer ${Math.round(remaining / 60)} minuten.`;
 }
 
 function ResultScreen({ asset }: { asset: AssetState }) {
@@ -207,13 +222,35 @@ function ResultScreen({ asset }: { asset: AssetState }) {
             )}
           </div>
 
-          <div className="mt-7 flex flex-col items-center gap-3">
-            <Button asChild size="lg" className="w-full sm:w-auto sm:min-w-64">
-              <a href={asset.result.downloadUrl} download={asset.result.fileName}>
-                <Download className="size-4" />
-                Downloaden
-              </a>
-            </Button>
+          {/* De download is waar deze hele flow op uitkomt; die knop mag je
+              niet hoeven zoeken. "Nog een maken" staat er als gelijkwaardige
+              tweede optie naast, niet als voetnoot eronder. */}
+          <div className="mt-8 flex flex-col items-center gap-4">
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+              <Button
+                asChild
+                size="lg"
+                className="h-14 w-full rounded-xl px-9 text-base font-semibold sm:w-auto sm:min-w-72"
+              >
+                <a href={asset.result.downloadUrl} download={asset.result.fileName}>
+                  <Download className="size-5" />
+                  Downloaden
+                </a>
+              </Button>
+
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="h-14 w-full rounded-xl px-7 text-base sm:w-auto"
+              >
+                <Link href="/">
+                  <Sparkles className="size-5" />
+                  Nog een maken
+                </Link>
+              </Button>
+            </div>
+
             <p className="text-muted-foreground font-mono text-xs">
               {asset.result.fileName}
             </p>
@@ -229,14 +266,16 @@ function ResultScreen({ asset }: { asset: AssetState }) {
         </div>
       )}
 
-      <div className="mt-10 flex justify-center">
-        <Button asChild variant="ghost">
-          <Link href="/">
-            <Sparkles className="size-4" />
-            Nog een maken
-          </Link>
-        </Button>
-      </div>
+      {!asset.result && (
+        <div className="mt-8 flex justify-center">
+          <Button asChild variant="outline" size="lg" className="h-14 rounded-xl px-7 text-base">
+            <Link href="/">
+              <Sparkles className="size-5" />
+              Nog een maken
+            </Link>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

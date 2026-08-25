@@ -8,6 +8,7 @@ import { rawRequest, type RawResult } from "./storyteq-transport";
 import {
   createdMediaSchema,
   genericErrorSchema,
+  listMediaSchema,
   listTemplatesSchema,
   singleMediaSchema,
   singleTemplateSchema,
@@ -140,6 +141,18 @@ function withoutEmptyValues(parameters: Record<string, string>) {
   return Object.fromEntries(
     Object.entries(parameters).filter(([, value]) => value.trim() !== ""),
   );
+}
+
+/** Eerdere media van een template — de bron voor tijdsverwachting en voorbeelden. */
+export async function listTemplateMedia(templateId: string) {
+  const result = await request(
+    `/content/templates/${encodeURIComponent(templateId)}/media`,
+    {
+      schema: listMediaSchema,
+      note: "eerdere media ophalen (historie)",
+    },
+  );
+  return result.data;
 }
 
 export async function getMedia(mediaId: string) {

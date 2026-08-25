@@ -392,6 +392,37 @@ Rauwe responses schrijft het verkenningsscript naar `docs/discovery/raw/`. Die
 map staat in `.gitignore`: daar zitten templatenamen en campagneteksten van
 klanten in.
 
+---
+
+## 11. Wat de batch- en wachtrij-functies uit de API halen
+
+Twee dingen die de app doet en die niet uit de documentatie komen:
+
+**De tijdsverwachting** in het wachtscherm komt uit `events` op media — een veld
+dat in geen enkel schema staat en per fase een tijdstempel bevat:
+
+```json
+"events": [
+  { "type": "finished",  "created_at": "2026-08-25 11:52:05" },
+  { "type": "uploading", "created_at": "2026-08-25 11:52:00" },
+  { "type": "rendering", "created_at": "2026-08-25 11:50:00" },
+  { "type": "queued",    "created_at": "2026-08-25 11:48:56" }
+]
+```
+
+Over 44 eerdere renders van template 43973 geeft dat: mediaan 122s, p90 362s.
+Dat is de bron voor "nog ongeveer twee minuten" — niet `processing_time`.
+
+**Het invulbestand** gebruikt de `label`-velden als kolomkoppen en de
+`meta.values` als toegestane waardes, zodat iemand in Excel "Green" kan invullen
+in plaats van `parameterValue-93f1d2f5-a120-4272-b53d-b34051d0cb12`.
+
+Beide functies leunen dus op velden die de spec niet noemt. Als Storyteq ze
+weghaalt, verdwijnt de verwachting en valt de app terug op "één tot drie
+minuten" — dat is bewust zo gebouwd, niet toevallig.
+
+---
+
 ### Zelf verkennen
 
 ```bash

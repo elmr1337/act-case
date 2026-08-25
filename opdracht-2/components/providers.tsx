@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 
+import { JobsWatcher } from "@/components/jobs-watcher";
 import { Toaster } from "@/components/ui/sonner";
 import { ClientError } from "@/lib/client";
 
@@ -31,6 +32,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
+      {/* Bewaakt lopende renders op elke pagina, zodat je niet hoeft te wachten. */}
+      <JobsWatcher />
       <Toaster position="bottom-right" richColors closeButton />
     </QueryClientProvider>
   );

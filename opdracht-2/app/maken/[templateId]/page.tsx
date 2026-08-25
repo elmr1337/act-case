@@ -1,4 +1,3 @@
-import { AppShell } from "@/components/app-shell";
 import { AssetForm } from "@/components/asset-form";
 
 export default async function CreatePage({
@@ -7,10 +6,5 @@ export default async function CreatePage({
   params: Promise<{ templateId: string }>;
 }) {
   const { templateId } = await params;
-
-  return (
-    <AppShell step="fill">
-      <AssetForm templateId={templateId} />
-    </AppShell>
-  );
+  return <AssetForm templateId={templateId} />;
 }

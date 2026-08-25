@@ -1,3 +1,4 @@
+import type { TemplateHistory } from "./history";
 import type { Template } from "./schemas";
 
 /**
@@ -34,4 +35,25 @@ export function getRememberedThumbnail(id: string): string | null {
 /** Alleen voor tests. */
 export function clearThumbnailCache() {
   thumbnails.clear();
+}
+
+/**
+ * De historie van een template (duur-verwachting en voorbeeldbeelden) kost een
+ * extra call naar Storyteq en verandert nauwelijks. Tien minuten cachen is ruim
+ * genoeg en houdt stap 2 en 3 snel.
+ */
+const history = new Map<string, { value: TemplateHistory; expiresAt: number }>();
+
+export function getCachedHistory(id: string): TemplateHistory | null {
+  const entry = history.get(id);
+  if (!entry) return null;
+  if (entry.expiresAt < Date.now()) {
+    history.delete(id);
+    return null;
+  }
+  return entry.value;
+}
+
+export function cacheHistory(id: string, value: TemplateHistory) {
+  history.set(id, { value, expiresAt: Date.now() + TTL_MS });
 }

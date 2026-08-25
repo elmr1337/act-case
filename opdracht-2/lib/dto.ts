@@ -23,6 +23,20 @@ export type FieldKind =
 
 export type FieldOption = { label: string; value: string };
 
+/**
+ * Grove categorie voor de visuele groepering in het formulier. We groeperen
+ * alleen *opeenvolgende* velden van dezelfde categorie, zodat de volgorde die
+ * de template zelf aangeeft (`order`) intact blijft.
+ */
+export type FieldGroup = "keuze" | "tekst" | "beeld" | "overig";
+
+export function groupOf(kind: FieldKind): FieldGroup {
+  if (kind === "select" || kind === "boolean" || kind === "color") return "keuze";
+  if (kind === "text" || kind === "longtext" || kind === "number") return "tekst";
+  if (kind === "image" || kind === "video" || kind === "url") return "beeld";
+  return "overig";
+}
+
 export type FormField = {
   /** De sleutel die terug moet in `template_parameters`. */
   name: string;
@@ -32,6 +46,7 @@ export type FormField = {
   /** Wat Storyteq zelf zei; blijft zichtbaar in de discovery-docs, niet in de UI. */
   rawType: string | null;
   required: boolean;
+  group: FieldGroup;
   /** Alleen bij `select`: de keuzes uit `meta.values`. */
   options?: FieldOption[];
   /** Voorinvulling uit `default` of `value`. */
@@ -63,6 +78,11 @@ export type AssetState = {
   id: string;
   templateId: string | null;
   phase: AssetPhase;
+  /**
+   * Wanneer Storyteq de render aannam. Hiermee klopt de verstreken tijd ook na
+   * een refresh of als je de link later opnieuw opent.
+   */
+  startedAt: string | null;
   /** 0–100. Een schatting: Storyteq geeft geen percentage terug. */
   progress: number;
   done: boolean;
@@ -143,6 +163,7 @@ function toField(param: TemplateParameter): FormField {
     name: param.name,
     label: param.label?.trim() || humanizeName(param.name),
     kind,
+    group: groupOf(kind),
     rawType: param.type ?? null,
     required: isRequired(param.required),
     options: kind === "select" ? options : undefined,
@@ -204,6 +225,32 @@ export function toTemplateDetail(template: Template): TemplateDetail {
   };
 }
 
+/**
+ * Of een ingevulde waarde er goed uitziet. Bewust mild: we weten niet wat
+ * Storyteq precies accepteert (zie docs/api-discovery.md §9), dus dit stuurt
+ * alleen het vinkje in de UI en blokkeert nooit het versturen — behalve bij een
+ * leeg verplicht veld.
+ */
+export function isFieldValid(field: FormField, raw: string): boolean {
+  const value = raw.trim();
+  if (!value) return false;
+
+  switch (field.kind) {
+    case "color":
+      return /^#[0-9a-f]{3,8}$/i.test(value);
+    case "url":
+    case "image":
+    case "video":
+      return /^https?:\/\/\S+\.\S+/i.test(value);
+    case "number":
+      return Number.isFinite(Number(value));
+    case "select":
+      return (field.options ?? []).some((option) => option.value === value);
+    default:
+      return true;
+  }
+}
+
 /** Ruwe schatting; Storyteq geeft geen voortgangspercentage. */
 const PHASE_PROGRESS: Record<AssetPhase, number> = {
   queued: 8,
@@ -262,6 +309,7 @@ export function toAssetState(media: Media): AssetState {
     id: media.id,
     templateId: media.template_id ?? null,
     phase,
+    startedAt: media.created_at ?? null,
     progress: PHASE_PROGRESS[phase],
     done: finished,
     failed: phase === "failed",
@@ -300,7 +348,15 @@ export function fileNameFor(media: Media, source: AssetSource): string {
   return base ? `${base}-${media.id}${ext}` : `storyteq-${media.id}${ext}`;
 }
 
+/** Alleen het stilstaande beeld — gebruikt voor voorbeelden bij keuzevelden. */
+export function thumbnailSourceFor(media: Media): AssetSource | null {
+  return firstUrl(media.urls, ["image"]) ?? firstUrl(media.download_urls, ["image"]);
+}
+
+export type SourceVariant = "preview" | "download" | "thumbnail";
+
 /** De URL waar het bestand écht staat — alleen server-side gebruikt. */
-export function sourceUrlFor(media: Media, variant: "preview" | "download") {
+export function sourceUrlFor(media: Media, variant: SourceVariant) {
+  if (variant === "thumbnail") return thumbnailSourceFor(media);
   return variant === "preview" ? previewSourceFor(media) : downloadSourceFor(media);
 }

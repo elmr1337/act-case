@@ -119,6 +119,13 @@ export const mediaSchema = z.looseObject({
   parameters: z.array(mediaParameterSchema).nullish(),
   duration: z.number().nullish(),
   main_media_type: z.string().nullish(),
+  /**
+   * Ongedocumenteerd: tijdstempels per fase. Hiermee is de werkelijke duur van
+   * eerdere renders te berekenen, en dus een eerlijke verwachting te geven.
+   */
+  events: z
+    .array(z.looseObject({ type: z.string().nullish(), created_at: z.string().nullish() }))
+    .nullish(),
   /** De media-response draagt de template mee — handig voor een nette bestandsnaam. */
   template: z.looseObject({ name: z.string().nullish() }).nullish(),
   created_at: z.string().nullish(),
@@ -138,6 +145,7 @@ export const envelope = <T extends z.ZodTypeAny>(inner: T) =>
   z.looseObject({ data: inner });
 
 export const listTemplatesSchema = envelope(z.array(templateSchema));
+export const listMediaSchema = envelope(z.array(mediaSchema));
 export const singleTemplateSchema = envelope(templateSchema);
 export const createdMediaSchema = z.looseObject({
   message: z.string().nullish(),
