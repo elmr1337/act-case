@@ -52,6 +52,7 @@ type Config struct {
 	Concurrency   int
 	ImageSize     string // fal image_size enum, e.g. portrait_4_3
 	ImageAspect   string // gemini aspectRatio, e.g. 3:4
+	ImageMaxEdge  int    // reference-beelden worden hiernaar geschaald vóór upload
 	TrainSteps    int
 
 	// Cost config (used when the provider response carries no cost)
@@ -111,6 +112,9 @@ func Load() (*Config, error) {
 		return nil, err
 	}
 	if c.TrainSteps, err = intenv("TRAIN_STEPS", 1000); err != nil {
+		return nil, err
+	}
+	if c.ImageMaxEdge, err = intenv("IMAGE_MAX_EDGE", 1536); err != nil {
 		return nil, err
 	}
 	if c.GeminiImageCostUSD, err = floatenv("GEMINI_IMAGE_COST_USD", 0.134); err != nil {

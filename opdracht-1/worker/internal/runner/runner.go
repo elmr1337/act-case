@@ -21,6 +21,7 @@ import (
 	"github.com/elmr1337/act-case/opdracht-1/worker/internal/analyze"
 	"github.com/elmr1337/act-case/opdracht-1/worker/internal/config"
 	"github.com/elmr1337/act-case/opdracht-1/worker/internal/cost"
+	"github.com/elmr1337/act-case/opdracht-1/worker/internal/imaging"
 	"github.com/elmr1337/act-case/opdracht-1/worker/internal/job"
 	"github.com/elmr1337/act-case/opdracht-1/worker/internal/lut"
 	"github.com/elmr1337/act-case/opdracht-1/worker/internal/provider"
@@ -70,7 +71,7 @@ func (r *Runner) Execute(ctx context.Context, j job.Job) (result string, err err
 	}
 	switch j.Type {
 	case job.TypeAnalyze:
-		res, err := analyze.Run(ctx, r.Store, r.Vision, r.Costs, j.ID, log.Printf)
+		res, err := analyze.Run(ctx, r.Store, r.Vision, r.Costs, j.ID, r.Cfg.ImageMaxEdge, log.Printf)
 		if err != nil {
 			return "", err
 		}
@@ -104,6 +105,11 @@ func (r *Runner) train(ctx context.Context, j job.Job) (string, error) {
 		data, err := r.Store.Read(ctx, key)
 		if err != nil {
 			return "", err
+		}
+		// Volledige campagne-originelen (8K, 40MB+) zijn zinloos voor de
+		// trainer en te groot voor fal storage; schaal naar max IMAGE_MAX_EDGE.
+		if data, err = imaging.Downscale(data, r.Cfg.ImageMaxEdge); err != nil {
+			return "", fmt.Errorf("%s: %w", key, err)
 		}
 		name := path.Base(key)
 		w, err := zw.Create(name)
@@ -296,7 +302,10 @@ func (r *Runner) pickRefs(ctx context.Context, max int) ([]provider.RefImage, er
 		if err != nil {
 			return nil, err
 		}
-		refs = append(refs, provider.RefImage{Data: data, Mime: analyze.MimeFor(k)})
+		if data, err = imaging.Downscale(data, r.Cfg.ImageMaxEdge); err != nil {
+			return nil, fmt.Errorf("%s: %w", k, err)
+		}
+		refs = append(refs, provider.RefImage{Data: data, Mime: "image/jpeg"})
 	}
 	return refs, nil
 }

@@ -1,6 +1,6 @@
 module github.com/elmr1337/act-case/opdracht-1/worker
 
-go 1.24
+go 1.25.0
 
 require (
 	github.com/anthropics/anthropic-sdk-go v1.66.0
@@ -8,6 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/credentials v1.19.37
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.107.3
 	github.com/redis/go-redis/v9 v9.22.0
+	golang.org/x/image v0.45.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -34,5 +35,5 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	go.yaml.in/yaml/v4 v4.0.0-rc.2 // indirect
 	golang.org/x/sync v0.16.0 // indirect
-	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
 )

@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/elmr1337/act-case/opdracht-1/worker/internal/cost"
+	"github.com/elmr1337/act-case/opdracht-1/worker/internal/imaging"
 	"github.com/elmr1337/act-case/opdracht-1/worker/internal/provider"
 	"github.com/elmr1337/act-case/opdracht-1/worker/internal/store"
 )
@@ -137,8 +138,9 @@ type Result struct {
 	CaptionsDir string
 }
 
-// Run executes the full analyze job.
-func Run(ctx context.Context, st store.Store, v Vision, costs *cost.Log, jobID string, logf func(string, ...any)) (Result, error) {
+// Run executes the full analyze job. maxEdge caps the pixel size of images
+// sent to the vision model.
+func Run(ctx context.Context, st store.Store, v Vision, costs *cost.Log, jobID string, maxEdge int, logf func(string, ...any)) (Result, error) {
 	if logf == nil {
 		logf = func(string, ...any) {}
 	}
@@ -159,7 +161,10 @@ func Run(ctx context.Context, st store.Store, v Vision, costs *cost.Log, jobID s
 		if err != nil {
 			return Result{}, err
 		}
-		parsed, raw, usage, err := analyzeOne(ctx, v, data, MimeFor(key))
+		if data, err = imaging.Downscale(data, maxEdge); err != nil {
+			return Result{}, fmt.Errorf("%s: %w", key, err)
+		}
+		parsed, raw, usage, err := analyzeOne(ctx, v, data, "image/jpeg")
 		if err != nil {
 			return Result{}, fmt.Errorf("analyse van %s faalde: %w", key, err)
 		}
