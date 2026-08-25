@@ -91,7 +91,7 @@ func Load() (*Config, error) {
 
 		AnalyzeProvider:    getenv("ANALYZE_PROVIDER", "gemini"),
 		AnthropicModel:     getenv("ANTHROPIC_MODEL", "claude-opus-5"),
-		GeminiAnalyzeModel: getenv("GEMINI_ANALYZE_MODEL", "gemini-2.5-flash"),
+		GeminiAnalyzeModel: getenv("GEMINI_ANALYZE_MODEL", "gemini-3.6-flash"),
 		GeminiImageModel:   getenv("GEMINI_IMAGE_MODEL", "gemini-3-pro-image-preview"),
 		GeminiBaseURL:      getenv("GEMINI_BASE_URL", "https://generativelanguage.googleapis.com/v1beta"),
 		FalFluxModel:       getenv("FAL_FLUX_MODEL", "fal-ai/flux/dev"),
