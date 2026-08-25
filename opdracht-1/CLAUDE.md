@@ -3,7 +3,8 @@
 ## Context
 
 ACT.agency praktijkcase, opdracht 1: campagnestijl klonen via drie
-generatiestrategieën (prompt / multiref / lora) × LUT aan/uit. De Go-worker in
+generatiestrategieën (prompt / multiref / lora); de LUT-as is gebouwd en
+getest maar bewust niet ingezet (zie README-verbeterpunten). De Go-worker in
 `worker/` voert alles uit; de deck en de finale beelden zijn de deliverable.
 Het volledige werkplan staat in [../PLAN.md](../PLAN.md) — volg de fases en
 stop bij elke 🧑 HUMAN-checkpoint.
@@ -41,7 +42,6 @@ local-first: memory-queue + lokaal bestandssysteem, geen Redis/S3 nodig.
 - `analysis/style-guide.md` (de merge) en `analysis/delta.md` na zijn review
 - `images/final/` (menselijke curatie, nooit automatisch kiezen)
 - de prompts in `matrix.yaml` (concept mag, vaststellen doet Elmar)
-- `lut/campaign.cube` (handmatig gemaakt)
 
 ## Nooit
 

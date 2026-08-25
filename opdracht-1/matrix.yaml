@@ -1,7 +1,7 @@
 # Batchdefinitie voor de matrix. Draaien: make -C worker run
 #
-# Analyse is al gedraaid (analysis/ai/); LUT staat uit tot lut/campaign.cube
-# bestaat — dan draaien we de -lut-cellen alsnog.
+# Analyse is al gedraaid (analysis/ai/). De LUT-as is bewust geschrapt
+# (zie README-verbeterpunten); de engine zit getest in de worker.
 #
 # Prompts: na de stijlanalyse aangepast aan het campagnethema (connectiviteit,
 # spreiding jong-oud, binnen/buiten). 🧑 Elmar kan ze altijd bijstellen; een

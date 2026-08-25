@@ -2,9 +2,9 @@
 
 Doel: de visuele stijl van een bestaande campagne analyseren en reproduceren op
 nieuwe beelden met andere personen. In plaats van één aanpak te gokken draaien we
-**drie generatiestrategieën naast elkaar**, elk met en zonder LUT-nabewerking —
-een 3×2-matrix van 6 cellen per testprompt, 18 outputs totaal. De beelden kiezen
-we daarna met de hand; de matrix maakt de keuze onderbouwbaar.
+**drie generatiestrategieën naast elkaar**, in drie iteratierondes met menselijke
+curatie-feedback ertussen — 27 beelden totaal. De beelden kiezen we met de hand;
+de matrix maakt de keuze onderbouwbaar.
 
 ## Aanpak in het kort
 
@@ -16,9 +16,11 @@ we daarna met de hand; de matrix maakt de keuze onderbouwbaar.
 2. **Drie strategieën, één baseline** — `prompt` (alleen de gedistilleerde
    style prompt), `multiref` (3–5 campagnebeelden als referentie) en `lora`
    (style-LoRA getraind op de set).
-3. **LUT als aparte as** — een handmatig gemaakte `.cube` uit de originelen,
-   toegepast als nabewerking. Zo zien we of kleur/grading het probleem is, of
-   licht/compositie.
+3. **Kleur-nabewerking als aparte as — gebouwd, bewust geparkeerd** — de
+   worker bevat een volledige `.cube` LUT-engine (parser + trilineaire
+   interpolatie, unit-tested) om grading deterministisch als nabewerking te
+   draaien. De handmatige grading-stap zelf (de `.cube` maken in Resolve) is
+   binnen de tijdsbox geschrapt; zie verbeterpunten.
 4. **Alles meetbaar** — elke provider-call logt kosten naar
    `outputs/costs.json`; `worker costs` maakt er een tabel van.
 
@@ -31,9 +33,9 @@ flowchart LR
     A --> F[multiref · Nano Banana Pro]
     D --> G[train style-LoRA · fal.ai]
     G --> H[lora · Flux+LoRA]
-    E & F & H --> I{LUT aan/uit}
-    I --> J[outputs/ 6 cellen per prompt]
-    J --> K[menselijke curatie -> images/final/]
+    E & F & H --> J[outputs/ per ronde]
+    J --> K[menselijke curatie-feedback -> ronde 2 en 3]
+    K --> L[finale selectie -> images/final/]
 ```
 
 ## Toolkeuze en waarom
@@ -43,7 +45,7 @@ flowchart LR
 | **Flux (fal.ai) als basemodel** voor `prompt` én `lora` | Zelfde basemodel in beide cellen isoleert de LoRA-delta: het verschil tussen die kolommen is *alleen* de training, niet het model. |
 | **Nano Banana Pro (Gemini)** voor `multiref` | Sterkste multi-reference beeldmodel van dit moment; test of few-shot referentie een training overbodig maakt. |
 | **Style-LoRA via fal.ai** | Reproduceerbaar en goedkoop trainbaar; captions beschrijven alleen content zodat de stijl aan de trigger phrase bindt (minder content leakage). Steps configureerbaar voor een overfitting-vergelijking (500/1000/2000). |
-| **LUT handmatig** (Photoshop/Resolve) | Grading is deterministisch na te bootsen; dat hoort niet in de gok van een generatief model. De worker past 'm alleen toe (.cube-parser + trilineaire interpolatie, pure Go). |
+| **LUT-engine in de worker** | Grading is deterministisch na te bootsen; dat hoort niet in de gok van een generatief model. De .cube-parser + trilineaire interpolatie zitten getest in de worker; de handmatige `.cube` zelf is bewust geschrapt (zie verbeterpunten). |
 | **Go-worker, local-first** | Queue- en storage-interfaces met env-drivers: default memory-queue + lokaal bestandssysteem (nul infra), optioneel Redis + S3 (Hetzner) als schaal-story. Kosten per job gelogd. |
 
 ## Quickstart (Docker, geen Go nodig)
@@ -59,7 +61,6 @@ Lokaal met Go 1.24+: `make -C worker run`. Losse stappen: `make -C worker analyz
 
 Vereisten vóór de eerste volledige run:
 - campagnefoto's in `./data/reference/` (bewust buiten git — niet publiek delen)
-- `lut/campaign.cube` (handmatig geëxporteerd)
 - prompts in [matrix.yaml](matrix.yaml) bevestigd
 
 De redis-variant (los enqueuen, meerdere workers) staat als voorbeeld in
@@ -71,7 +72,7 @@ maar het is geen requirement om te draaien.
 ```
 worker/          Go-worker: queue, store, providers, LUT-engine, cost logging
 analysis/        human.md (Elmar) · ai/ (gegenereerd) · delta.md · style-guide.md (merge)
-lut/             campaign.cube (handmatig)
+lut/             leeg — LUT-as geparkeerd; de engine zit in de worker
 outputs/         {prompt,multiref,lora}[-lut]/ + costs.json (gegenereerd)
 images/final/    de definitieve beelden (menselijke keuze)
 deck/            de 5 slides
@@ -93,16 +94,21 @@ geconfigureerde prijzen per beeld/step (bron staat per regel in
 - [x] 🧑 `analysis/human.md` (geschreven vóór het lezen van de AI-analyse)
 - [x] AI-analyse: 23 beelden + aggregatie ($0,04) → `analysis/ai/`
 - [x] `analysis/delta.md` — mens vs AI, met fotocheck als scheidsrechter
-- [ ] 🧑 Delta reviewen + samen mergen naar `analysis/style-guide.md`
-- [ ] 🧑 `lut/campaign.cube` exporteren
-- [ ] 🧑 Prompts in `matrix.yaml` vaststellen
-- [x] Matrix gedraaid zonder LUT: training (1000 steps) + 9 outputs, totaal $2,59
-- [ ] LUT-cellen draaien zodra `lut/campaign.cube` er is (matrix: `lut: [false, true]`)
+- [x] 🧑 Delta gereviewd + gemergd naar `analysis/style-guide.md`
+- [x] 🧑 Prompts vastgesteld (aangepast aan het connectiviteitsthema)
+- [x] Matrix gedraaid in 3 iteratierondes met curatie-feedback (27 beelden, $3,69 totaal)
+- [x] LUT-as bewust geschrapt na een eigen poging in Resolve — engine blijft getest in de worker; zie verbeterpunten
 - [x] 🧑 Curatie: multiref (ronde 3) unaniem winnaar → 3 finals in `images/final/`
 - [ ] Deck (5 slides)
 
 ## Wat ik anders zou doen met meer tijd/budget
 
+- **De grading-nabewerking daadwerkelijk inzetten**: de pipeline ondersteunt
+  een handgemaakte `.cube` end-to-end (parser + trilineaire interpolatie,
+  getest). Met een kleurgrader — of meer eigen uren in Resolve — duwt die
+  laatste stap de generaties nóg dichter op de campagne, en belangrijker: hij
+  maakt beelden uit verschillende bronnen (Flux vs Gemini) onderling
+  consistenter, omdat iedereen door dezelfde grade gaat.
 - **Meer trainingsdata en een nette LoRA-sweep**: rank en steps systematisch
   vergelijken in plaats van drie steps-waarden; per run een vaste seed-set zodat
   verschillen alleen van de training komen.
