@@ -103,12 +103,15 @@ geconfigureerde prijzen per beeld/step (bron staat per regel in
 
 ## Wat ik anders zou doen met meer tijd/budget
 
-- **De grading-nabewerking daadwerkelijk inzetten**: de pipeline ondersteunt
-  een handgemaakte `.cube` end-to-end (parser + trilineaire interpolatie,
-  getest). Met een kleurgrader — of meer eigen uren in Resolve — duwt die
+- **De grading-nabewerking daadwerkelijk inzetten**: die mogelijkheid is in
+  de tool ontworpen en getest — de worker bevat een volledige `.cube`-engine
+  (parser + trilineaire interpolatie) en de matrix kent LUT als eigen as. Eén
+  handgemaakte `campaign.cube` in `lut/` en `lut: [false, true]` in
+  matrix.yaml, en elke cel krijgt zonder codewijziging een gegradeerde
+  variant. Met een kleurgrader — of meer eigen uren in Resolve — duwt die
   laatste stap de generaties nóg dichter op de campagne, en belangrijker: hij
   maakt beelden uit verschillende bronnen (Flux vs Gemini) onderling
-  consistenter, omdat iedereen door dezelfde grade gaat.
+  consistenter, omdat alles door dezelfde grade gaat.
 - **Meer trainingsdata en een nette LoRA-sweep**: rank en steps systematisch
   vergelijken in plaats van drie steps-waarden; per run een vaste seed-set zodat
   verschillen alleen van de training komen.
