@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, Table2 } from "lucide-react";
+import { File, Files } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -22,10 +22,13 @@ export function ModeToggle({ templateId }: { templateId: string }) {
       role="group"
       aria-label="Hoeveel assets"
     >
-      <Option href={base} active={!batch} icon={<FileText className="size-4" />}>
+      {/* De iconen gaan over aantal, niet over hoe je het invult: één bestand
+          tegen een stapeltje. Een tabel-icoon zou over de CSV gaan, en dat is
+          hier niet de vraag. */}
+      <Option href={base} active={!batch} icon={<File className="size-4" />}>
         Eén
       </Option>
-      <Option href={`${base}/batch`} active={batch} icon={<Table2 className="size-4" />}>
+      <Option href={`${base}/batch`} active={batch} icon={<Files className="size-4" />}>
         Meerdere
       </Option>
     </div>

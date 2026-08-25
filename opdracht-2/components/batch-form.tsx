@@ -6,8 +6,8 @@ import {
   Download,
   FileSpreadsheet,
   Loader2,
+  Files,
   Sparkles,
-  Table2,
   TriangleAlert,
   Upload,
 } from "lucide-react";
@@ -235,7 +235,7 @@ function BatchWizard({ template }: { template: TemplateDetail }) {
             formulier — je moet meteen zien dat je iets anders aan het doen bent. */}
         <div className="mb-8 space-y-2">
           <span className="bg-accent text-accent-foreground inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold">
-            <Table2 className="size-3.5" />
+            <Files className="size-3.5" />
             Meerdere tegelijk
           </span>
           {/* De templatenaam staat al in de balk hierboven; hier gaat het om
