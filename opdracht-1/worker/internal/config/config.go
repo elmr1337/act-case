@@ -193,6 +193,16 @@ func loadDotEnv(path string) error {
 		}
 		k = strings.TrimSpace(k)
 		v = strings.TrimSpace(v)
+		// Inline comments: alles vanaf een # dat door whitespace wordt
+		// voorafgegaan hoort niet bij de waarde (tenzij de waarde gequote is).
+		if !strings.HasPrefix(v, `"`) && !strings.HasPrefix(v, `'`) {
+			for i := 0; i < len(v); i++ {
+				if v[i] == '#' && (i == 0 || v[i-1] == ' ' || v[i-1] == '\t') {
+					v = strings.TrimSpace(v[:i])
+					break
+				}
+			}
+		}
 		v = strings.Trim(v, `"'`)
 		if k == "" || os.Getenv(k) != "" {
 			continue
