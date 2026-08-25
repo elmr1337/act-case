@@ -64,6 +64,7 @@ function PollingScreen({ asset }: { asset: AssetState }) {
       phase={asset.phase}
       elapsed={elapsed}
       estimate={history.data?.estimate ?? null}
+      templateId={asset.templateId}
     />
   );
 }
@@ -89,10 +90,12 @@ function WaitingScreen({
   phase,
   elapsed,
   estimate,
+  templateId,
 }: {
   phase: AssetPhase;
   elapsed: number;
   estimate: DurationEstimate | null;
+  templateId?: string | null;
 }) {
   // Het blijft van begin tot eind hetzelfde: je asset wordt gemaakt. De fase
   // eronder vertelt waar hij is, zonder dat de kop steeds verspringt.
@@ -127,6 +130,43 @@ function WaitingScreen({
           ? "Hij is er nog mee bezig. Je kunt dit tabblad gerust open laten staan."
           : "Je kunt dit tabblad open laten staan — we laten het weten zodra het klaar is."}
       </p>
+
+      {/*
+        Wachten hoeft niet: deze render loopt door in de wachtrij en je krijgt
+        een melding zodra hij klaar is. Zonder deze knop lijkt het statusscherm
+        een doodlopende weg, en dat is precies wat we niet willen.
+      */}
+      <div className="border-border/70 mt-10 w-full border-t pt-8">
+        <p className="text-foreground text-sm font-medium">
+          Je hoeft hier niet op te wachten
+        </p>
+        <p className="text-muted-foreground mt-1 text-sm text-balance">
+          Hij loopt door en je krijgt een melding zodra hij klaar is.
+        </p>
+
+        <div className="mt-4 flex flex-col items-center gap-3">
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="h-12 w-full rounded-xl text-base sm:w-auto sm:min-w-64"
+          >
+            <Link href={templateId ? `/maken/${encodeURIComponent(templateId)}` : "/"}>
+              <Sparkles className="size-4" />
+              Maak er ondertussen nog een
+            </Link>
+          </Button>
+
+          {templateId && (
+            <Link
+              href="/"
+              className="text-muted-foreground hover:text-foreground text-sm underline underline-offset-4 transition-colors"
+            >
+              of kies een andere template
+            </Link>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

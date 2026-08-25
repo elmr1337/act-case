@@ -98,7 +98,8 @@ alles in één kolom en maakt het er Latin-1 van. Bij het inlezen kijken we gewo
 welk scheidingsteken het vaakst voorkomt, dus een komma-CSV uit een ander
 programma werkt ook.
 
-**De wachtrij.** Je hoeft niet op het statusscherm te blijven staan. Elke render
+**De wachtrij.** Je hoeft niet op het statusscherm te blijven staan — dat scherm
+zegt het zelf, met een knop om er ondertussen nog een te maken. Elke render
 die je start komt in "jouw assets"; een achtergrond-poller bewaakt ze op élke
 pagina en je krijgt een melding zodra er een klaar is — een toast als het tabblad
 open staat, een systeemmelding als dat niet zo is. Toestemming daarvoor vragen we
