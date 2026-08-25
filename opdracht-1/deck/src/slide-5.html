@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>Opdracht 1 — slide 5</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1920px;height:1080px;font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+     background:#faf9f7;color:#1d1d1f;overflow:hidden;position:relative}
+.slide{width:1920px;height:1080px;padding:64px 90px 92px;display:flex;flex-direction:column;gap:34px}
+.kicker{font-size:19px;font-weight:700;color:#4789C6;text-transform:uppercase;letter-spacing:4px;margin-bottom:8px}
+h1{font-size:52px;font-weight:800;letter-spacing:-1.2px;line-height:1.05}
+h1 .accent{color:#d76a8a}
+h2{font-size:24px;font-weight:700;margin-bottom:14px}
+p,li{font-size:21px;line-height:1.45}
+ul{list-style:none}
+li{padding:7px 0 7px 30px;position:relative}
+li::before{content:'';position:absolute;left:2px;top:16px;width:12px;height:12px;border-radius:4px;background:#F2A2B3}
+li.blue::before{background:#4789C6}
+li b{font-weight:700}
+.card{background:#fff;border-radius:20px;box-shadow:0 10px 34px rgba(29,29,31,.08);padding:30px 34px}
+.footer{position:absolute;bottom:30px;left:90px;right:90px;display:flex;justify-content:space-between;
+        font-size:16px;color:#a3a29e;font-weight:600}
+img{object-fit:cover;display:block}
+.badge{position:absolute;top:14px;left:14px;background:rgba(29,29,31,.82);color:#fff;font-size:15px;
+       font-weight:700;padding:6px 14px;border-radius:999px;letter-spacing:.5px}
+.badge.new{background:#d76a8a}
+.imgwrap{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(29,29,31,.14)}
+.chip{display:inline-flex;align-items:center;gap:10px;background:#fff;border-radius:999px;
+      padding:10px 20px;font-size:18px;font-weight:600;box-shadow:0 4px 14px rgba(29,29,31,.08)}
+.note{font-size:17px;color:#7a7975;line-height:1.35}
+</style></head><body>
+<div class="slide">
+  <div>
+    <div class="kicker">Zelfkritiek &amp; vooruit</div>
+    <h1>Wat misging, <span class="accent">en wat het oplevert</span></h1>
+  </div>
+  <div style="display:flex;gap:30px;flex:1">
+    <div class="card" style="flex:1">
+      <h2>Eerlijk: dit ging mis</h2>
+      <ul>
+        <li>de LoRA <b>kloonde een gezicht</b> uit de trainingsset — gespot door het menselijk oog, gefixt met scale 1,0 → 0,85</li>
+        <li>multiref zette in ronde 1 <b>figuranten</b> in beeld, tegen de briefing in — pas na expliciet afgedwongen compositieregels verdwenen</li>
+        <li>Flux tekent koppig <b>bedrade earbuds</b>; Gemini volgde “wireless” wél — model-priors zijn echt</li>
+        <li>de handmatige <b>.cube bleek vakwerk</b> — geschrapt; de LUT-as zit wel ontworpen én getest in de tool</li>
+        <li>8K-originelen maakten een <b>1&thinsp;GB trainingszip</b> — fal weigerde; opgelost met downscaling naar 1536&thinsp;px vóór elke upload</li>
+        <li>twee modelnamen bleken <b>tijdens de bouw al verouderd</b> (Gemini) — alle modellen en endpoints zitten daarom in config, niet in code</li>
+      </ul>
+    </div>
+    <div class="card" style="flex:1">
+      <h2>Met meer tijd of budget</h2>
+      <ul>
+        <li class="blue"><b>grading-nabewerking</b> inzetten: maakt beelden uit verschillende bronnen onderling consistenter</li>
+        <li class="blue"><b>LoRA-sweep</b> (steps × rank) + identity-behoud voor vaste, fictieve campagnegezichten</li>
+        <li class="blue">evaluatie hardmaken: <b>CLIP-similarity</b> naar de set + klein menselijk panel</li>
+        <li class="blue"><b>upscale-stap</b> naar drukwerk-resolutie vóór levering</li>
+        <li class="blue"><b>prompt-bibliotheek</b> per contentvorm (social, OOH, banner) bovenop dezelfde style guide</li>
+        <li class="blue">redis/S3-modus aanzetten en de worker als <b>gedeelde teamservice</b> draaien — de drivers zitten er al in</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card" style="background:#1d1d1f;color:#fff;display:flex;align-items:center;gap:30px;padding:26px 36px">
+    <div style="font-size:34px">→</div>
+    <p style="font-size:24px;line-height:1.4"><b>Eenmalige campagne?</b> Multiref wint op mens en moment.&nbsp;&nbsp;
+    <b>Doorlopende samenwerking?</b> Dan is een brand-LoRA het klant-asset: één keer trainen, per campagne bijtrainen, elke afdeling genereert on-brand.</p>
+  </div>
+  <div class="footer"><span>ACT.agency praktijkcase — opdracht 1 · visuele stijlkloning</span>
+<span>Elmar Hamelink · augustus 2026 · 5 / 5</span></div>
+</div></body></html>

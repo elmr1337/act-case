@@ -99,7 +99,8 @@ geconfigureerde prijzen per beeld/step (bron staat per regel in
 - [x] Matrix gedraaid in 3 iteratierondes met curatie-feedback (27 beelden, $3,69 totaal)
 - [x] LUT-as bewust geschrapt na een eigen poging in Resolve — engine blijft getest in de worker; zie verbeterpunten
 - [x] 🧑 Curatie: multiref (ronde 3) unaniem winnaar → 3 finals in `images/final/`
-- [ ] Deck (5 slides)
+- [x] Deck: 5 slides (PNG + PDF) in `deck/` — concept
+- [ ] 🧑 Deck-teksten herschrijven in eigen woorden (laatste checkpoint)
 
 ## Wat ik anders zou doen met meer tijd/budget
 
@@ -123,6 +124,9 @@ geconfigureerde prijzen per beeld/step (bron staat per regel in
 - **Evaluatie hardmaken**: CLIP/DINO-similarity naar de referentieset en een
   klein menselijk panel, in plaats van alleen mijn eigen oog.
 - **Upscaling/retouche-stap** vóór levering op drukwerk-resolutie.
+
+> **Let op:** de deck en `deck/assets/` bevatten enkele campagne-originelen ter
+> vergelijking — deze repo privé houden en alleen met ACT delen.
 
 ## Transparantie
 
