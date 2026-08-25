@@ -1,87 +1,110 @@
 # Stijlanalyse — eigen oog (Elmar)
 
-> **Invullen vóór je ook maar iets uit `analysis/ai/` opent.** Dat is het hele
-> punt van de dubbele analyse: eerst het menselijk oog, dan pas de AI, daarna
-> de delta. Werkwijze: leg alle referentiebeelden naast elkaar, kijk twee
-> minuten zonder te typen, en vul dan de secties hieronder in eigen woorden in.
-> Vaktermen zijn niet nodig — "warm en korrelig" is een prima observatie.
-> De secties spiegelen bewust de AI-analyse, zodat de vergelijking straks
-> sectie-voor-sectie kan. De hints staan in HTML-comments (zichtbaar in je
-> editor, onzichtbaar op GitHub); laten staan of weggooien mag allebei.
+> Op basis van mijn eigen kijk-sessie door de referentieset; gedicteerd en
+> door Claude uitgeschreven **vóór er enige AI-analyse gedraaid is** (die
+> volgorde is het hele punt van de dubbele analyse). Terminologie licht
+> opgeschoond, observaties ongewijzigd.
 
 ## Eerste indruk
 
-<!-- Drie losse woorden + één zin, vóór je gaat analyseren. Dit is het
-     onderbuikgevoel dat een model niet heeft — komt letterlijk zo in de deck. -->
+**Kleurrijk · echt · verbonden.**
 
-…
+Gewone mensen, gesnapt in een blij moment met hun muziek of hun scherm — het
+voelt als een snelle snapshot uit het echte Nederlandse leven, niet als een
+geposeerde reclamefoto.
 
 ## Licht
 
-<!-- Waar komt het licht vandaan (voor/zij/tegen)? Hard of zacht? Warm of
-     koud? Dag/avond/kunstlicht? Zijn er schaduwen en hoe donker zijn die? -->
+Geen strakblauwe luchten: bewolkt, soms zelfs wat grijs-blauwig. Verder is
+licht niet het eerste wat opvalt aan deze set — het stuurt niet, het is er
+gewoon.
 
-…
+<!-- 🧑 optioneel aanvullen: waar komt het licht vandaan, hard/zacht,
+     binnen vs buiten? -->
 
 ## Kleur
 
-<!-- Welke 3-5 kleuren domineren? Wat is de accentkleur? Zijn huidtinten
-     natuurlijk of gestuurd? Voelt het gedempt of verzadigd? -->
-
-…
+- Props en kleding zijn altijd kleurrijk: geen saaie witte muren, geen
+  zwart/witte kleding. Het voelt fun en kleurig.
+- Maar de verzadiging is **niet** fel — het zit er middenin. Niet flets, niet
+  knallend: echt.
+- Veel kleur zit in de styling (kleding, props, interieur), niet in een
+  filter over het beeld.
 
 ## Compositie & kadrering
 
-<!-- Waar staat de persoon in beeld (midden/derde)? Hoeveel lucht/ruimte
-     eromheen? Camerastandpunt: ooghoogte, laag, hoog? Dichtbij of ver? -->
-
-…
+- Camerastandpunt voelt steeds **net iets onder ooghoogte** — licht
+  kikvorsperspectief waardoor mensen net wat groter voelen. Maar niet té
+  laag.
+- De compositie is bewust niet perfect: subject net uit het midden, horizon
+  niet waterpas. Het voelt als een snelle snapshot in plaats van een
+  uitgemeten kadrering.
+- De focus ligt echt op het gezicht en de lach.
+- Altijd een helder moment van **1 of 2 mensen** — geen figuranten, niemand
+  op de achtergrond.
 
 ## Lens & scherptediepte
 
-<!-- Is de achtergrond wazig of scherp? Voelt het als een telelens (plat,
-     dichtbij getrokken) of wijd (veel omgeving, vertekening aan de randen)? -->
-
-…
+- Vrijwel elke foto is met een open diafragma geschoten: kleine
+  scherptediepte, veel blur.
+- Regelmatig een duidelijke voorgrond die óók onscherp is, met het subject
+  er scherp tussenin (blur–focus–blur).
+- Brandpunt gok ik op 50–70mm.
 
 ## Grading & bewerking
 
-<!-- Veel of weinig contrast? Zit er een kleurzweem over het geheel (blauw in
-     de schaduwen, warm in de highlights)? Korrel? Voelen de zwarten echt
-     zwart of grijzig? -->
+Mid-verzadiging, echt gevoel: niet flat, niet bright. Geen zichtbare zware
+bewerking.
 
-…
+<!-- 🧑 optioneel aanvullen: contrast, kleurzweem, korrel? -->
 
 ## Sfeer
 
-<!-- Welk gevoel moet dit oproepen? Voor wie voelt dit gemaakt? -->
-
-…
+- Mensen zitten in een **bliss-moment**: muziek luisteren, selfies maken,
+  bellen, scrollen op een iPad. Connectiviteit is duidelijk het thema.
+- Soms delen twee mensen dat moment, allebei blij.
+- Het zijn echte mensen, geen perfecte mannequins — gewone mensen, gesnapt
+  midden in een beweging: een hand, een lach, interactie.
+- Casting van jong tot oud, van zwart tot wit: het voelt **voor iedereen**.
+- Locaties: overal waar mensen muziek luisteren of op hun telefoon/iPad
+  zitten — kamer, binnen, buiten, achtertuin.
+- Alles oogt heel **Nederlands**: de huizen, de kleding, het landschap.
 
 ## Per beeld (optioneel)
 
-<!-- Alleen wat opvalt per beeld: uitschieters, dingen die maar in één foto
-     zitten, het beeld dat het meest "de campagne" is. Bestandsnaam erbij. -->
+<!-- 🧑 nog invullen als er per foto uitschieters zijn; welk beeld is het
+     meest "de campagne"? -->
 
 …
 
 ## Do's & don'ts als je dit zou namaken
 
-<!-- Elk 3-5 concrete punten. "Do: altijd één persoon centraal" /
-     "Don't: geen felle middagzon". Dit wordt straks naast de AI-lijst gelegd. -->
-
 **Do's**
 
-- …
+- 1 of 2 mensen, één helder moment, focus op gezicht en lach
+- Altijd een connectiviteits-moment: muziek, selfie, videobellen, tablet
+- Kleur in kleding, props en omgeving; casting van jong tot oud, divers
+- Open diafragma, veel blur, graag ook een onscherpe voorgrond
+- Camera net onder ooghoogte
+- Snapshot-kadrering: subject uit het midden, horizon mag scheef
+- Mensen midden in een beweging of interactie, nooit stijf geposeerd
+- Nederlandse context in huizen, kleding of landschap
+- Verzadiging middenin houden: niet flets, niet knallend
+- Bewolkte, gewone luchten
 
 **Don'ts**
 
-- …
+- Geen figuranten of mensen op de achtergrond
+- Geen zakelijke kleding of pakken — gewone dagelijkse kleding
+- Geen witte muren, geen zwart/witte styling
+- Geen strakblauwe luchten
+- Geen perfecte poses of mannequin-mensen, niet te statisch
+- Geen perfecte, uitgemeten compositie
+- Geen oververzadigd of juist flat gegradeerd beeld
+- Camera niet op ooghoogte, maar ook niet extreem laag
 
 ## De stijl in één zin
 
-<!-- Als je maar één zin aan een fotograaf mocht doorgeven om deze campagne
-     na te schieten — welke? Dit is jouw "style prompt" en gaat in delta.md
-     naast de gedistilleerde AI-versie. -->
-
-…
+Echte, kleurrijke Nederlanders van jong tot oud, net onder ooghoogte en met
+open diafragma gesnapt in een blij moment van verbondenheid — imperfect
+gekadreerd alsof het een snapshot is.
