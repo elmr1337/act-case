@@ -81,8 +81,9 @@ curl -s localhost:3000/api/health
 
 Twee dingen die de opdracht niet vroeg maar die de app pas echt bruikbaar maken:
 
-Je schakelt er per template tussen met een **Eén / Meerdere**-knop in de balk,
-zodat je nooit ongemerkt in de verkeerde modus zit.
+Je kiest eerst een template en schakelt daarna met de **Eén / Meerdere**-knop in
+de balk. Bewust maar één ingang: een aparte knop in de topbar zou een tweede
+bediening voor hetzelfde zijn, en dan weet je niet meer welke je moet hebben.
 
 **Honderd assets uit één Excel-bestand.** Je haalt bij een template een
 invulbestand op — één kolom per veld, verplichte velden met een `*`, en een
@@ -272,7 +273,6 @@ app/
   maken/[templateId]/          invullen
   maken/[templateId]/batch/    meerdere tegelijk via CSV
   asset/[assetId]/             wachten en downloaden
-  batch/                       template kiezen voor de CSV-flow
   overzicht/                   jouw assets: wat loopt en wat klaar is
   api/                         de proxy (templates, thumbnails, assets, download, jobs, health)
 components/                    UI, incl. shadcn-primitives in components/ui/

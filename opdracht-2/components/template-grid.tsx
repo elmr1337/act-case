@@ -47,12 +47,8 @@ const SORT_LABEL: Record<SortKey, string> = {
 };
 
 /** Stap 1: kiezen. Eén klik op een kaart en je bent bij het invullen. */
-export function TemplateGrid({ mode = "single" }: { mode?: "single" | "batch" } = {}) {
-  // Geen functie als prop: die kan een server component niet doorgeven.
-  const hrefFor = (id: string) =>
-    mode === "batch"
-      ? `/maken/${encodeURIComponent(id)}/batch`
-      : `/maken/${encodeURIComponent(id)}`;
+export function TemplateGrid() {
+  const hrefFor = (id: string) => `/maken/${encodeURIComponent(id)}`;
 
   const { data, isPending, isError, error, refetch } = useTemplates();
 

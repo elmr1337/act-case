@@ -54,9 +54,10 @@ jouw joblijst:  lib/jobs.ts (localStorage)  ─┬─► niets meer, standaard
   het maximum; geen statuscodes, geen veldnamen uit de API (die zijn UUID's).
 - **Local-first.** De joblijst werkt altijd zonder server-opslag; Redis is een
   optionele spiegel. Faalt de server, dan merkt de gebruiker dat niet.
-- **Modus moet zichtbaar zijn.** Enkel of batch verschilt alleen in de URL en de
-  inhoud; daarom een expliciete `ModeToggle` in de balk, een actieve staat in de
-  topbar, en een eigen kop op de batch-pagina.
+- **Modus moet zichtbaar zijn, en één bediening hebben.** Enkel of batch
+  verschilt alleen in de URL en de inhoud; daarom een expliciete `ModeToggle` in
+  de balk plus een eigen kop op de batch-pagina. De topbar heeft er géén knop
+  voor: twee ingangen naar dezelfde modus is verwarrender dan één.
 - **Beloof geen tijden die we niet kunnen onderbouwen.** De verwachting in stap 3
   komt uit de eigen historie van de template (`lib/history.ts`), niet uit
   `processing_time` — dat veld telt de wachtrij niet mee.
