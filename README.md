@@ -11,4 +11,4 @@ Opdracht 1 bevat een standalone Go-worker (queue + storage + providers + LUT-eng
 
 Opdracht 2 is een Next.js-app met een proxy-architectuur (de Storyteq-key blijft server-side) en een lineaire vier-stappen-flow in plaats van een dashboard; zie de [README van opdracht 2](opdracht-2/README.md) en [wat we over de API ontdekten](opdracht-2/docs/api-discovery.md).
 
-De werkplannen waarmee dit is gebouwd staan in [PLAN.md](PLAN.md) en [PLAN-2.md](PLAN-2.md) — dit project is met Claude Code gebouwd en daar zijn we open over.
+Beide opdrachten zijn plan-eerst gebouwd met Claude Code: stack, architectuur en wat bewust *niet* gebouwd wordt, vastgesteld voordat er een regel code stond. Daar zijn we open over; per opdracht staat in de README wat AI deed en wat een mens besloot.

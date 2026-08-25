@@ -136,7 +136,7 @@ geconfigureerde prijzen per beeld/step (bron staat per regel in
 
 ## Transparantie
 
-Dit project is gebouwd met Claude Code; het werkplan staat in
-[PLAN.md](../PLAN.md) in de root. De stijlanalyse is bewust dubbel uitgevoerd
-(mens + AI) en de finale beeldkeuze is menselijk curatiewerk — dat automatiseren
-we met opzet niet.
+Dit project is gebouwd met Claude Code, plan-eerst: de fases en de menselijke
+checkpoints stonden vast voordat er code was. De stijlanalyse is bewust dubbel
+uitgevoerd (mens + AI) en de finale beeldkeuze is menselijk curatiewerk — dat
+automatiseren we met opzet niet.

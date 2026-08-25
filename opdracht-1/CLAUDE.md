@@ -6,8 +6,7 @@ ACT.agency praktijkcase, opdracht 1: campagnestijl klonen via drie
 generatiestrategieën (prompt / multiref / lora); de LUT-as is gebouwd en
 getest maar bewust niet ingezet (zie README-verbeterpunten). De Go-worker in
 `worker/` voert alles uit; de deck en de finale beelden zijn de deliverable.
-Het volledige werkplan staat in [../PLAN.md](../PLAN.md) — volg de fases en
-stop bij elke 🧑 HUMAN-checkpoint.
+Stop bij alles wat menselijk oordeel vraagt — zie "Van Elmar" hieronder.
 
 ## Commando's
 

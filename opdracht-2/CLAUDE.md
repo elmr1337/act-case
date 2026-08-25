@@ -6,9 +6,9 @@
 
 ACT.agency praktijkcase, opdracht 2: een Next.js-app waarmee iemand zónder
 technische achtergrond een asset genereert en downloadt via de Storyteq API —
-één tegelijk of honderd via een CSV. Lineaire flow, geen dashboard. Het
-oorspronkelijke werkplan staat in [../PLAN-2.md](../PLAN-2.md); batch, wachtrij
-en de optionele Redis-laag zijn er later bij gekomen op verzoek van Elmar.
+één tegelijk of honderd via een CSV. Lineaire flow, geen dashboard. De basis is
+plan-eerst gebouwd; batch, wachtrij en de optionele Redis-laag zijn daar later
+bij gekomen op verzoek van Elmar.
 
 ## Commando's
 

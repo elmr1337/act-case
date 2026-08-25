@@ -218,9 +218,10 @@ response-waardes, want dat log wordt gecommit en de token is persoonlijk.
 Deze app is gebouwd met **Claude Code**, en dat is een bewuste werkwijze geweest,
 geen bijzaak:
 
-- **Plan eerst.** [`../PLAN-2.md`](../PLAN-2.md) is met de hand vastgesteld
-  vóórdat er een regel code stond: stack, architectuur, wat bewust *niet* gebouwd
-  wordt, en waar menselijke review nodig is.
+- **Plan eerst.** Stack, architectuur, wat bewust *niet* gebouwd wordt en waar
+  menselijke review nodig is: allemaal met de hand vastgesteld vóórdat er een
+  regel code stond. Batch, wachtrij en de Redis-laag zijn daar later bij gekomen,
+  ook op basis van een expliciete keuze en niet omdat het kon.
 - **AI heeft gedaan:** de discovery (inclusief het vinden van de OpenAPI-specs),
   de proxy-laag, de zod-schemas en tests, de componenten, de Docker-setup en het
   leeuwendeel van deze documentatie.
