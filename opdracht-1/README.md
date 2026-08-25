@@ -98,7 +98,7 @@ geconfigureerde prijzen per beeld/step (bron staat per regel in
 - [ ] 🧑 Prompts in `matrix.yaml` vaststellen
 - [x] Matrix gedraaid zonder LUT: training (1000 steps) + 9 outputs, totaal $2,59
 - [ ] LUT-cellen draaien zodra `lut/campaign.cube` er is (matrix: `lut: [false, true]`)
-- [ ] 🧑 Curatie → `images/final/`
+- [x] 🧑 Curatie: multiref (ronde 3) unaniem winnaar → 3 finals in `images/final/`
 - [ ] Deck (5 slides)
 
 ## Wat ik anders zou doen met meer tijd/budget
