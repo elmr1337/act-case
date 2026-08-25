@@ -1,25 +1,25 @@
-# Batchdefinitie voor de volledige matrix: 3 prompts x 3 varianten x LUT aan/uit
-# = 18 outputs. Draaien: make run  (of: make docker-run ARGS="run matrix.yaml")
+# Batchdefinitie voor de matrix. Draaien: make -C worker run
 #
-# 🧑 HUMAN CHECKPOINT (PLAN.md §4): onderstaande prompts zijn CONCEPTEN.
-# Elmar stelt de definitieve testprompts vast vóór de echte run.
-# Richtlijn: andere personen dan de originele set, campagne-passende settings,
-# spreiding in leeftijd/context om consistentie te bewijzen. Alleen content
-# beschrijven — stijl komt uit de style prompt / references / LoRA.
+# Analyse is al gedraaid (analysis/ai/); LUT staat uit tot lut/campaign.cube
+# bestaat — dan draaien we de -lut-cellen alsnog.
+#
+# Prompts: na de stijlanalyse aangepast aan het campagnethema (connectiviteit,
+# spreiding jong-oud, binnen/buiten). 🧑 Elmar kan ze altijd bijstellen; een
+# cel opnieuw draaien kost ~$0,03-0,15 per beeld.
 
 client_id: act-case
-analyze: true          # eerste run: analyse draait vóór training en generatie
+analyze: false
 train:
-  enabled: true        # vereist FAL_API_KEY; zet op false om alleen prompt/multiref te draaien
-  steps: [1000]        # voor de overfitting-vergelijking in de deck: [500, 1000, 2000]
+  enabled: true
+  steps: [1000]
 
 variants: [prompt, multiref, lora]
-lut: [false, true]
+lut: [false]
 
 prompts:
   - id: p1
-    text: "a woman in her early sixties waiting at a bus stop on a quiet city street"
+    text: "a woman in her sixties waving at her smartphone during a video call in her backyard"
   - id: p2
-    text: "a young man reading a newspaper while riding a tram"
+    text: "a young man with earbuds listening to music, eyes closed, leaning against a brick wall on a city street"
   - id: p3
-    text: "two children playing football in a small urban park"
+    text: "two friends laughing together at a smartphone screen on a couch in a living room"
