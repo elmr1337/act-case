@@ -4,8 +4,6 @@ Een Next.js-app waarmee iemand zonder technische achtergrond in vier stappen een
 asset maakt: **kies een template → vul in → wacht → download**. Geen dashboard,
 geen instellingen, geen jargon.
 
-![Stap 1 — templates kiezen](docs/screenshots/01-templates.png)
-
 ---
 
 ## Aanpak in vijf regels
