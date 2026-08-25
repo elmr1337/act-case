@@ -96,7 +96,8 @@ geconfigureerde prijzen per beeld/step (bron staat per regel in
 - [ ] 🧑 Delta reviewen + samen mergen naar `analysis/style-guide.md`
 - [ ] 🧑 `lut/campaign.cube` exporteren
 - [ ] 🧑 Prompts in `matrix.yaml` vaststellen
-- [ ] Matrix draaien → 18 outputs + kosten-tabel
+- [x] Matrix gedraaid zonder LUT: training (1000 steps) + 9 outputs, totaal $2,59
+- [ ] LUT-cellen draaien zodra `lut/campaign.cube` er is (matrix: `lut: [false, true]`)
 - [ ] 🧑 Curatie → `images/final/`
 - [ ] Deck (5 slides)
 

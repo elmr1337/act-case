@@ -1,0 +1,8 @@
+{
+  "lora_url": "https://v3b.fal.media/files/b/0aa7bbed/aPH0piFtpELidpy5Mn_lH_pytorch_lora_weights.safetensors",
+  "config_url": "https://v3b.fal.media/files/b/0aa7bbed/mqt_C11shdntr1OcXlLVe_config.json",
+  "request_id": "01a03817-bb5c-7602-b2e6-e5cc46626acc",
+  "steps": 1000,
+  "trigger_phrase": "ACTCAMP style",
+  "created_at": "2026-08-25T08:50:13.531530419Z"
+}
