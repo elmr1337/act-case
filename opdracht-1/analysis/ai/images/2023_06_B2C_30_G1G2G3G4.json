@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Holding a smartphone to her ear while gazing upward with a subtle smile.",
+    "caption": "An elderly Black woman talks on a smartphone while standing outdoors by a river.",
+    "clothing": "Green knit cardigan over a white button-up collared shirt.",
+    "person": "Senior Black woman with short, tight curly grey hair, wearing a ring.",
+    "setting": "Outdoors near a waterfront with blurred trees and structures under a daylight sky."
+  },
+  "style": {
+    "composition": "Low-angle close-up profile framing, subject offset right, upwards perspective.",
+    "grading": "High midtone clarity, natural warm contrast, punchy greens, clean soft highlights.",
+    "lens": {
+      "depth_of_field": "Shallow depth of field with creamy background bokeh",
+      "focal_length_impression": "50mm portrait look"
+    },
+    "lighting": {
+      "direction": "High frontal key light from top right with ambient fill",
+      "quality": "Direct daylight softened by light cloud haze",
+      "temperature": "Warm daylight, approx 5500K"
+    },
+    "mood": "Optimistic, serene, modern",
+    "palette": [
+      {
+        "hex": "#00A651",
+        "role": "accent"
+      },
+      {
+        "hex": "#C28965",
+        "role": "skin"
+      },
+      {
+        "hex": "#8EA6B4",
+        "role": "background"
+      },
+      {
+        "hex": "#506152",
+        "role": "secondary"
+      },
+      {
+        "hex": "#4D524A",
+        "role": "dominant"
+      }
+    ]
+  }
+}

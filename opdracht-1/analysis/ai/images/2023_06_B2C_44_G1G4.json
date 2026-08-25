@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Sitting together on a couch, looking off-camera and laughing.",
+    "caption": "A smiling young woman in a striped rugby shirt sits on a sofa beside a man wearing a purple jacket.",
+    "clothing": "Pink and blue striped rugby shirt; purple varsity jacket with tan pants.",
+    "person": "Young woman with reddish-blonde hair and light skin in foreground; young Black man with curly dark hair behind her.",
+    "setting": "Indoor living room with a sofa, colorful pillows, and wall art."
+  },
+  "style": {
+    "composition": "Low-angle close-up, primary subject right foreground, secondary subject blurred upper-left.",
+    "grading": "Warm color cast, moderate contrast, vibrant saturation, warm shadows.",
+    "lens": {
+      "depth_of_field": "shallow, soft background defocus",
+      "focal_length_impression": "28mm look"
+    },
+    "lighting": {
+      "direction": "front-left overhead",
+      "quality": "soft",
+      "temperature": "warm, approx 3800K"
+    },
+    "mood": "Joyful, candid, warm",
+    "palette": [
+      {
+        "hex": "#F08CAE",
+        "role": "dominant"
+      },
+      {
+        "hex": "#6DA8E7",
+        "role": "secondary"
+      },
+      {
+        "hex": "#50257B",
+        "role": "accent"
+      },
+      {
+        "hex": "#0D6E52",
+        "role": "background"
+      },
+      {
+        "hex": "#F2B89D",
+        "role": "skin"
+      }
+    ]
+  }
+}

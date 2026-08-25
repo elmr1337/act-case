@@ -1,0 +1,49 @@
+{
+  "content": {
+    "action": "Taking a selfie with a high-held smartphone.",
+    "caption": "Two young women take a selfie together in a grassy field under a cloudy sky.",
+    "clothing": "Bright pink jacket over green patterned top, pale yellow jacket over yellow shirt.",
+    "person": "Two young adult females; one with curly brown hair, one with strawberry blonde hair.",
+    "setting": "Grassy rural field under a cloudy sky."
+  },
+  "style": {
+    "composition": "Low-angle wide perspective, off-center tight framing anchored by an extended diagonal from upper left.",
+    "grading": "Clean contrast, bright midtone saturation, neutral shadow recovery.",
+    "lens": {
+      "depth_of_field": "Deep, smooth background falloff",
+      "focal_length_impression": "24mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "Overhead diffuse daylight",
+      "quality": "Soft overcast",
+      "temperature": "Neutral, approx 5600K"
+    },
+    "mood": "Joyful, candid, energetic",
+    "palette": [
+      {
+        "hex": "#E689A1",
+        "role": "secondary"
+      },
+      {
+        "hex": "#EDEC9B",
+        "role": "secondary"
+      },
+      {
+        "hex": "#27684E",
+        "role": "accent"
+      },
+      {
+        "hex": "#6C8A2E",
+        "role": "dominant"
+      },
+      {
+        "hex": "#C9D5DD",
+        "role": "background"
+      },
+      {
+        "hex": "#E3C2AE",
+        "role": "skin"
+      }
+    ]
+  }
+}

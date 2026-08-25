@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Lying together on a bed, laughing while looking at a smartphone and sharing orange earphones.",
+    "caption": "A young couple lies on a colorful bed together looking at a smartphone while sharing earphones.",
+    "clothing": "Man in a royal blue shirt over a white tee; woman in a rainbow-striped top and denim overalls.",
+    "person": "A young Black man with curly dark hair and a young light-skinned woman with reddish hair.",
+    "setting": "A bed with green-and-white striped bedding and decorative pillows."
+  },
+  "style": {
+    "composition": "Overhead bird's-eye view, centered diagonal arrangement, tight framing.",
+    "grading": "Vibrant saturation, punchy contrast, warm highlights.",
+    "lens": {
+      "depth_of_field": "deep",
+      "focal_length_impression": "35mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "overhead top-left",
+      "quality": "diffused natural sunlight",
+      "temperature": "warm, ~4800K"
+    },
+    "mood": "Joyful, intimate, energetic.",
+    "palette": [
+      {
+        "hex": "#0F8B60",
+        "role": "dominant"
+      },
+      {
+        "hex": "#0F4FD2",
+        "role": "secondary"
+      },
+      {
+        "hex": "#E39C16",
+        "role": "accent"
+      },
+      {
+        "hex": "#DB671A",
+        "role": "accent"
+      },
+      {
+        "hex": "#DF9C7D",
+        "role": "skin"
+      }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "content": {
+    "action": "Touching an earpiece with eyes closed and a soft smile.",
+    "caption": "A senior man with glasses touches his ear outside near a blue house.",
+    "clothing": "Bright orange jacket over a royal blue sweater and light blue shirt.",
+    "person": "Senior male, balding with grey hair, round glasses, light stubble.",
+    "setting": "Outdoors near a blue building and green trees under a cloudy sky."
+  },
+  "style": {
+    "composition": "Low-angle close-up, perspective distortion, subject centered with background sloping right.",
+    "grading": "High saturation on primary colors, clean contrast, crisp daylight exposure.",
+    "lens": {
+      "depth_of_field": "moderate",
+      "focal_length_impression": "24mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "Top-down outdoor daylight",
+      "quality": "diffused",
+      "temperature": "neutral, ~5500K"
+    },
+    "mood": "Serene, vivid, uplifting.",
+    "palette": [
+      {
+        "hex": "#EE6A1B",
+        "role": "accent"
+      },
+      {
+        "hex": "#1D7BD7",
+        "role": "dominant"
+      },
+      {
+        "hex": "#4E7EA6",
+        "role": "background"
+      },
+      {
+        "hex": "#D9E2E5",
+        "role": "background"
+      },
+      {
+        "hex": "#E5AA89",
+        "role": "skin"
+      },
+      {
+        "hex": "#3E6B2A",
+        "role": "secondary"
+      }
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Standing with eyes closed and hand resting on head",
+    "caption": "A young woman with curly hair stands outdoors with her eyes closed and a hand on her head while wearing a light blue earbud.",
+    "clothing": "Pink, orange, and light blue striped long-sleeved shirt",
+    "person": "Young woman with curly brown hair, light skin, light blue earbud",
+    "setting": "Paved outdoor street"
+  },
+  "style": {
+    "composition": "High-angle medium close-up, top-down perspective",
+    "grading": "High contrast, saturated warm tones, bright highlights",
+    "lens": {
+      "depth_of_field": "moderate depth, crisp foreground texture",
+      "focal_length_impression": "24mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "Direct overhead sunlight",
+      "quality": "hard",
+      "temperature": "warm, approx 5600K"
+    },
+    "mood": "Carefree, energetic, vibrant",
+    "palette": [
+      {
+        "hex": "#E87098",
+        "role": "dominant"
+      },
+      {
+        "hex": "#F07833",
+        "role": "secondary"
+      },
+      {
+        "hex": "#7CB5DF",
+        "role": "accent"
+      },
+      {
+        "hex": "#E3A387",
+        "role": "skin"
+      },
+      {
+        "hex": "#5B5653",
+        "role": "background"
+      }
+    ]
+  }
+}

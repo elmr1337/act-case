@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Smiling and laughing closely together.",
+    "caption": "Two young women laugh together while standing in a grassy field under a cloudy sky.",
+    "clothing": "Pink jacket with green patterned shirt, and a yellow shirt with a cream jacket.",
+    "person": "Two young adult women, one with brown curly hair and green eyeliner, one with straight auburn hair and pink eyeliner.",
+    "setting": "Grassy outdoor field under a cloudy sky."
+  },
+  "style": {
+    "composition": "Eye-level close-up wide portrait, filling lower two-thirds, overcast sky top third.",
+    "grading": "Clean high-key contrast, saturated pastel tones, filmic grain, open shadows.",
+    "lens": {
+      "depth_of_field": "Moderate depth of field with light background softening",
+      "focal_length_impression": "28mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "Overhead diffused sky daylight",
+      "quality": "Soft daylight",
+      "temperature": "Neutral, approx 5500K"
+    },
+    "mood": "Joyful, energetic, candid.",
+    "palette": [
+      {
+        "hex": "#EC88A5",
+        "role": "accent"
+      },
+      {
+        "hex": "#EBF26B",
+        "role": "accent"
+      },
+      {
+        "hex": "#618023",
+        "role": "background"
+      },
+      {
+        "hex": "#C3CFD2",
+        "role": "background"
+      },
+      {
+        "hex": "#EAA98D",
+        "role": "skin"
+      }
+    ]
+  }
+}

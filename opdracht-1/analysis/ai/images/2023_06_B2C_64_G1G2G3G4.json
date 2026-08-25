@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Female lying on male's lap holding up a smartphone while both look at it.",
+    "caption": "A young woman lies on an older man's lap while holding up a pink smartphone outdoors.",
+    "clothing": "Blue polo shirt and yellow shorts on male; pink patterned dress on female.",
+    "person": "Older male with short gray hair and glasses; young adult female with dark curly hair.",
+    "setting": "Outdoor garden terrace with lush foliage and cushioned wicker seating."
+  },
+  "style": {
+    "composition": "High-angle, tight framing centered on subjects reclining on a couch.",
+    "grading": "High contrast, vibrant saturation, warm tones.",
+    "lens": {
+      "depth_of_field": "Moderate depth of field",
+      "focal_length_impression": "28mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "Overhead",
+      "quality": "Direct daylight with dappled shade",
+      "temperature": "Warm, approx 5800K"
+    },
+    "mood": "Warm, joyful, intimate",
+    "palette": [
+      {
+        "hex": "#1A70B0",
+        "role": "secondary"
+      },
+      {
+        "hex": "#D1628C",
+        "role": "accent"
+      },
+      {
+        "hex": "#3B5838",
+        "role": "background"
+      },
+      {
+        "hex": "#E08C2B",
+        "role": "accent"
+      },
+      {
+        "hex": "#E2A384",
+        "role": "skin"
+      }
+    ]
+  }
+}

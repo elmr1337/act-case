@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Holding a smartphone up near his mouth to record a voice message.",
+    "caption": "A middle-aged man smiles while holding a smartphone near his mouth outdoors in front of blue houses.",
+    "clothing": "Muted pink crewneck sweatshirt.",
+    "person": "Middle-aged male with short curly grey-brown hair, stubble, and a wide smile.",
+    "setting": "Outdoor residential street with modern blue wooden houses."
+  },
+  "style": {
+    "composition": "Low-angle shot, subject centered in foreground looking off-camera against sky and tilted architecture.",
+    "grading": "Clean natural contrast, slightly boosted muted tones, soft highlights.",
+    "lens": {
+      "depth_of_field": "medium-shallow, background softly blurred",
+      "focal_length_impression": "28mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "overhead",
+      "quality": "soft diffused",
+      "temperature": "cool neutral, ~5800K"
+    },
+    "mood": "Candid, cheerful, casual.",
+    "palette": [
+      {
+        "hex": "#B85B6B",
+        "role": "dominant"
+      },
+      {
+        "hex": "#275C89",
+        "role": "secondary"
+      },
+      {
+        "hex": "#D9E0E3",
+        "role": "background"
+      },
+      {
+        "hex": "#DDA88F",
+        "role": "skin"
+      },
+      {
+        "hex": "#3E562D",
+        "role": "accent"
+      }
+    ]
+  }
+}

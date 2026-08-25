@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Adjusting an earbud while looking upward with a subtle smile",
+    "caption": "A young woman with long curly hair touches her ear while looking toward the sky in a residential neighborhood.",
+    "clothing": "Multi-colored striped t-shirt featuring orange, blue, and pink bands",
+    "person": "Young adult female with long curly auburn hair and fair skin",
+    "setting": "Suburban street with modern brick and slate architectural buildings under a clear sky"
+  },
+  "style": {
+    "composition": "Low-angle close-up framing, centered subject focal point, prominent sky background",
+    "grading": "High contrast, vibrant saturation, natural daylight highlights, rich shadow detail",
+    "lens": {
+      "depth_of_field": "medium, sharp foreground with slightly softened background",
+      "focal_length_impression": "24mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "Direct overhead key light from upper right",
+      "quality": "hard",
+      "temperature": "warm, approximately 5600K"
+    },
+    "mood": "Optimistic, bright, energetic",
+    "palette": [
+      {
+        "hex": "#4789C6",
+        "role": "dominant"
+      },
+      {
+        "hex": "#4D5563",
+        "role": "secondary"
+      },
+      {
+        "hex": "#7A352D",
+        "role": "background"
+      },
+      {
+        "hex": "#E3A389",
+        "role": "skin"
+      },
+      {
+        "hex": "#F0572E",
+        "role": "accent"
+      }
+    ]
+  }
+}

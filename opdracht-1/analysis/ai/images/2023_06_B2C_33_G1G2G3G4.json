@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Adjusting a light purple earbud in her ear while smiling",
+    "caption": "A senior woman wearing a green cardigan smiles as she adjusts a light purple earbud next to sparkling water.",
+    "clothing": "Bright green knitted cardigan over a white polka-dot top, gold ring",
+    "person": "Senior Black woman with short curly grey hair and light freckles",
+    "setting": "Outdoors beside a body of water with sparkling sun reflections"
+  },
+  "style": {
+    "composition": "High-angle tight close-up, subject framed left with right negative space",
+    "grading": "High contrast, rich warm saturation, punchy highlight roll-off",
+    "lens": {
+      "depth_of_field": "Shallow depth with bright specular bokeh",
+      "focal_length_impression": "35mm look"
+    },
+    "lighting": {
+      "direction": "High top-right sun",
+      "quality": "Direct, hard daylight",
+      "temperature": "Warm, approx 5500K"
+    },
+    "mood": "Uplifting, bright, active",
+    "palette": [
+      {
+        "hex": "#0F9B58",
+        "role": "dominant"
+      },
+      {
+        "hex": "#506168",
+        "role": "secondary"
+      },
+      {
+        "hex": "#BA8B64",
+        "role": "skin"
+      },
+      {
+        "hex": "#CFAAD4",
+        "role": "accent"
+      },
+      {
+        "hex": "#F0E4D2",
+        "role": "background"
+      }
+    ]
+  }
+}

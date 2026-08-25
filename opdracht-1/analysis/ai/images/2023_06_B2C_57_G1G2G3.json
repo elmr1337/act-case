@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Lying on stomach on a bed, holding up a smartphone.",
+    "caption": "A young woman lies on a bed holding up a smartphone.",
+    "clothing": "Rainbow striped t-shirt and blue denim overalls.",
+    "person": "Young adult female, fair freckled skin, auburn hair in a bun, smiling.",
+    "setting": "Bedroom with striped bedding and a clothing rack."
+  },
+  "style": {
+    "composition": "Low-angle wide shot, close proximity, foreground framing right, focal point center-left.",
+    "grading": "High saturation, warm color cast, punchy contrast with bright highlights.",
+    "lens": {
+      "depth_of_field": "Shallow, soft background bokeh",
+      "focal_length_impression": "28mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "Side-lit from screen-left window",
+      "quality": "Direct sunlight with warm fill",
+      "temperature": "Warm, approx 4800K"
+    },
+    "mood": "Cheerful, candid, energetic.",
+    "palette": [
+      {
+        "hex": "#38A185",
+        "role": "dominant"
+      },
+      {
+        "hex": "#CFA489",
+        "role": "background"
+      },
+      {
+        "hex": "#4C7094",
+        "role": "secondary"
+      },
+      {
+        "hex": "#EDAD99",
+        "role": "skin"
+      },
+      {
+        "hex": "#E83251",
+        "role": "accent"
+      }
+    ]
+  }
+}

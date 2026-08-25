@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Lying in a hammock while holding a smartphone near his face to speak",
+    "caption": "A man lies in an orange outdoor hammock while holding a smartphone near his mouth.",
+    "clothing": "Short-sleeved shirt with a multicolored abstract geometric pattern",
+    "person": "Man in his late 20s with short dark hair and facial stubble",
+    "setting": "Outdoor garden with dense green foliage behind"
+  },
+  "style": {
+    "composition": "Low-angle close-up framing, off-center subject with foliage filling negative space",
+    "grading": "High contrast, vibrant saturation, deep shadows with warm sunlight highlights",
+    "lens": {
+      "depth_of_field": "shallow, soft foliage bokeh",
+      "focal_length_impression": "28mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "Direct overhead daylight from top-right",
+      "quality": "hard",
+      "temperature": "warm, approx 5800K"
+    },
+    "mood": "Carefree, sunny, relaxed",
+    "palette": [
+      {
+        "hex": "#1D3B1C",
+        "role": "dominant"
+      },
+      {
+        "hex": "#E35B29",
+        "role": "secondary"
+      },
+      {
+        "hex": "#D89A7B",
+        "role": "skin"
+      },
+      {
+        "hex": "#E8E4D8",
+        "role": "accent"
+      },
+      {
+        "hex": "#0F1A0E",
+        "role": "background"
+      }
+    ]
+  }
+}

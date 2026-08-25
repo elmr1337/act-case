@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Man smiling while watching a young person operate a smartphone at a breakfast table",
+    "caption": "A middle-aged man sits at a kitchen table smiling at a young person using a smartphone.",
+    "clothing": "Light blue denim button-up over white t-shirt; bright yellow and orange patterned garment",
+    "person": "Middle-aged man with short curly grey-brown hair and stubble; young Black person in foreground profile",
+    "setting": "Modern open-plan kitchen and dining area with green walls and wooden cabinets"
+  },
+  "style": {
+    "composition": "Over-the-shoulder tight shot, blurred foreground right framing, centered midground focus",
+    "grading": "Bright exposure, natural warm tones, lifted shadows, moderately high saturation",
+    "lens": {
+      "depth_of_field": "Shallow with smooth foreground and background blur",
+      "focal_length_impression": "35mm wide angle look"
+    },
+    "lighting": {
+      "direction": "Frontal-side window illumination",
+      "quality": "Soft diffused",
+      "temperature": "Warm neutral, approx 4800K"
+    },
+    "mood": "Warm, intimate, domestic, candid",
+    "palette": [
+      {
+        "hex": "#5A7E9E",
+        "role": "secondary"
+      },
+      {
+        "hex": "#929E80",
+        "role": "background"
+      },
+      {
+        "hex": "#EFC41E",
+        "role": "accent"
+      },
+      {
+        "hex": "#C9805F",
+        "role": "skin"
+      },
+      {
+        "hex": "#59372B",
+        "role": "skin"
+      }
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Man takes a selfie while the woman smiles behind him.",
+    "caption": "A young man takes a selfie in a bedroom while a young woman smiles from the bed behind him.",
+    "clothing": "Vibrant royal blue shirt over white t-shirt; colorful rainbow striped top with denim dungarees.",
+    "person": "Young Black man with curly dark hair; young white woman with light hair in a high bun.",
+    "setting": "Sunlit bedroom beside a bed with striped bedding."
+  },
+  "style": {
+    "composition": "Selfie point-of-view, close-up framing, main subject low-left foreground, secondary subject upper-right background.",
+    "grading": "High contrast with deep shadows, rich punchy saturation, and warm golden highlights.",
+    "lens": {
+      "depth_of_field": "moderate depth of field with slight background softening",
+      "focal_length_impression": "24mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "Direct front-side sunlight through a window",
+      "quality": "hard",
+      "temperature": "warm, approx 4800K"
+    },
+    "mood": "Playful, energetic, youthful",
+    "palette": [
+      {
+        "hex": "#1237CF",
+        "role": "dominant"
+      },
+      {
+        "hex": "#1BB390",
+        "role": "secondary"
+      },
+      {
+        "hex": "#DD7D1D",
+        "role": "accent"
+      },
+      {
+        "hex": "#DE9D7A",
+        "role": "skin"
+      },
+      {
+        "hex": "#301A18",
+        "role": "background"
+      }
+    ]
+  }
+}

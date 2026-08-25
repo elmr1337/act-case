@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Smiling and gazing upward while wearing a small light blue earbud.",
+    "caption": "A young woman wearing an earbud smiles while looking up at the clear sky in an urban outdoor setting.",
+    "clothing": "Light-colored top visible at the shoulder.",
+    "person": "Young adult female with long curly brown hair and fair skin.",
+    "setting": "Outdoor urban plaza with modern brick buildings in the background."
+  },
+  "style": {
+    "composition": "Low-angle close-up portrait, dynamic diagonal placement, large negative space of open sky",
+    "grading": "High contrast, rich warm saturation, bright clean highlights, deep natural shadows",
+    "lens": {
+      "depth_of_field": "shallow depth of field, blurred background",
+      "focal_length_impression": "28mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "High direct sunlight from front-right",
+      "quality": "hard direct sunlight",
+      "temperature": "warm daylight, approx 5600K"
+    },
+    "mood": "Optimistic, vibrant, modern",
+    "palette": [
+      {
+        "hex": "#4B8EC4",
+        "role": "dominant"
+      },
+      {
+        "hex": "#B6724C",
+        "role": "secondary"
+      },
+      {
+        "hex": "#482618",
+        "role": "secondary"
+      },
+      {
+        "hex": "#E09C7B",
+        "role": "skin"
+      },
+      {
+        "hex": "#A8C3D8",
+        "role": "accent"
+      }
+    ]
+  }
+}

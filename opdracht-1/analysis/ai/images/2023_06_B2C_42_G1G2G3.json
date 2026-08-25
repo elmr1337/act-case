@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Sitting cross-legged and holding a video game controller.",
+    "caption": "A young man sitting on a couch smiles while holding a video game controller.",
+    "clothing": "Teal polo shirt and khaki trousers.",
+    "person": "Young adult Black male with curly ringlets and a cheerful expression.",
+    "setting": "Living room sofa area beside a floor lamp."
+  },
+  "style": {
+    "composition": "Low-angle wide shot with centered subject and exaggerated foreground perspective.",
+    "grading": "Warm color cast, natural contrast, vibrant warm tones.",
+    "lens": {
+      "depth_of_field": "moderate, subtle foreground blur",
+      "focal_length_impression": "24mm wide-angle"
+    },
+    "lighting": {
+      "direction": "front-facing, slightly elevated",
+      "quality": "soft",
+      "temperature": "warm, ~3800K"
+    },
+    "mood": "Casual, cheerful, engaging.",
+    "palette": [
+      {
+        "hex": "#0D8681",
+        "role": "dominant"
+      },
+      {
+        "hex": "#D68D36",
+        "role": "secondary"
+      },
+      {
+        "hex": "#0C473A",
+        "role": "accent"
+      },
+      {
+        "hex": "#8C573A",
+        "role": "skin"
+      },
+      {
+        "hex": "#9C9177",
+        "role": "background"
+      }
+    ]
+  }
+}

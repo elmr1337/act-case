@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Smiling while speaking into a red mobile phone.",
+    "caption": "A young woman with curly hair smiles while talking into a red smartphone outdoors under a cloudy sky.",
+    "clothing": "Green patterned top and pink jacket.",
+    "person": "Young adult female, curly brown hair, light skin, green eye makeup.",
+    "setting": "Outdoors under an overcast sky."
+  },
+  "style": {
+    "composition": "Low-angle, close-up shot looking upward with foreground perspective distortion.",
+    "grading": "Clean contrast, natural high saturation, balanced highlights and midtones.",
+    "lens": {
+      "depth_of_field": "Moderate with blurred extreme foreground",
+      "focal_length_impression": "24mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "Overhead",
+      "quality": "Soft, diffused",
+      "temperature": "Neutral daylight, ~5200K"
+    },
+    "mood": "Upbeat, cheerful, energetic",
+    "palette": [
+      {
+        "hex": "#E3AB95",
+        "role": "skin"
+      },
+      {
+        "hex": "#4E3220",
+        "role": "dominant"
+      },
+      {
+        "hex": "#D63340",
+        "role": "accent"
+      },
+      {
+        "hex": "#2B996A",
+        "role": "accent"
+      },
+      {
+        "hex": "#B7C4CC",
+        "role": "background"
+      }
+    ]
+  }
+}

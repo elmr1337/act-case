@@ -1,0 +1,49 @@
+{
+  "content": {
+    "action": "Reclining on a cushion, looking upward while wearing a pink earbud",
+    "caption": "A young woman with curly hair reclines on an outdoor chair while wearing a pink earbud and smiling upward.",
+    "clothing": "Pink patterned top, gold chain necklace, lavender sunglasses on head",
+    "person": "Young adult female, brown curly hair, light skin, broad smile",
+    "setting": "Outdoor patio lounge area with foliage and a wicker chair"
+  },
+  "style": {
+    "composition": "High-angle close-up framing, tight diagonal orientation, off-center focal point angled toward upper-right frame",
+    "grading": "Vibrant saturation, high contrast, warm highlights, deep greens and rich purples",
+    "lens": {
+      "depth_of_field": "Moderate depth of field with soft background blur",
+      "focal_length_impression": "28mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "Overhead diffuse daylight",
+      "quality": "Soft daylight fill",
+      "temperature": "Warm, approx 5500K"
+    },
+    "mood": "Cheerful, energetic, summery",
+    "palette": [
+      {
+        "hex": "#E3A68F",
+        "role": "skin"
+      },
+      {
+        "hex": "#1D4A2B",
+        "role": "dominant"
+      },
+      {
+        "hex": "#238048",
+        "role": "secondary"
+      },
+      {
+        "hex": "#8A61AA",
+        "role": "accent"
+      },
+      {
+        "hex": "#D15B7A",
+        "role": "accent"
+      },
+      {
+        "hex": "#A27448",
+        "role": "background"
+      }
+    ]
+  }
+}

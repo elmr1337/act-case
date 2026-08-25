@@ -247,7 +247,14 @@ func (r *Runner) generate(ctx context.Context, j job.Job) (string, error) {
 func (r *Runner) stylePrompt(ctx context.Context) (string, error) {
 	for _, key := range []string{stylePromptUser, stylePromptAI} {
 		if data, err := r.Store.Read(ctx, key); err == nil && len(bytes.TrimSpace(data)) > 0 {
-			return string(bytes.TrimSpace(data)), nil
+			s := strings.TrimSpace(string(data))
+			// De prompt-variant plakt zelf al "Photographic style:" ervoor;
+			// strip die prefix als het bestand ermee begint.
+			lower := strings.ToLower(s)
+			if strings.HasPrefix(lower, "photographic style:") {
+				s = strings.TrimSpace(s[len("photographic style:"):])
+			}
+			return s, nil
 		}
 	}
 	return "", fmt.Errorf("geen style prompt gevonden (%s of %s) — draai eerst de analyze-job", stylePromptUser, stylePromptAI)

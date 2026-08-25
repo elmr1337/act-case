@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Holding and looking down at a purple smartphone.",
+    "caption": "A young woman looks down at her purple smartphone while standing outdoors near a waterfront.",
+    "clothing": "Bright yellow denim jacket over a multicolored striped top.",
+    "person": "Young woman with long curly brown hair and purple nail polish.",
+    "setting": "Outdoors near a waterfront with trees and houseboats under a clear sky."
+  },
+  "style": {
+    "composition": "Low-angle shot, off-center foreground elements, open sky background.",
+    "grading": "High saturation on primary colors, strong contrast, clean highlights.",
+    "lens": {
+      "depth_of_field": "moderate depth, soft foreground and background bokeh",
+      "focal_length_impression": "28mm wide-angle perspective"
+    },
+    "lighting": {
+      "direction": "high backlighting with frontal fill",
+      "quality": "bright direct sunlight",
+      "temperature": "warm, ~5600K"
+    },
+    "mood": "Vibrant, energetic, modern.",
+    "palette": [
+      {
+        "hex": "#DBBA22",
+        "role": "dominant"
+      },
+      {
+        "hex": "#98C1E0",
+        "role": "background"
+      },
+      {
+        "hex": "#C28C72",
+        "role": "skin"
+      },
+      {
+        "hex": "#A091CD",
+        "role": "accent"
+      },
+      {
+        "hex": "#3A4F3A",
+        "role": "secondary"
+      }
+    ]
+  }
+}

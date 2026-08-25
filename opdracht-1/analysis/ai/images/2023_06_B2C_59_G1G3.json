@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Smiling while talking on a smartphone.",
+    "caption": "A young woman in a rainbow shirt smiles while talking on a smartphone indoors.",
+    "clothing": "Rainbow striped shirt and denim overalls.",
+    "person": "Young adult female, fair skin, light hair, orange eyeliner, nose ring, blue nails.",
+    "setting": "Indoors near bedding."
+  },
+  "style": {
+    "composition": "Tight close-up, low-angle tilt, centered subject.",
+    "grading": "High contrast, rich saturation, deep crushed shadows.",
+    "lens": {
+      "depth_of_field": "moderately shallow",
+      "focal_length_impression": "28mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "High-angle direct window light",
+      "quality": "hard",
+      "temperature": "warm daylight, ~5000K"
+    },
+    "mood": "Candid, joyful, vibrant",
+    "palette": [
+      {
+        "hex": "#14100E",
+        "role": "background"
+      },
+      {
+        "hex": "#ECAE9E",
+        "role": "skin"
+      },
+      {
+        "hex": "#3EA1DC",
+        "role": "accent"
+      },
+      {
+        "hex": "#E84D76",
+        "role": "accent"
+      },
+      {
+        "hex": "#537494",
+        "role": "secondary"
+      }
+    ]
+  }
+}

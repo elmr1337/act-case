@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Reclining on an outdoor couch while holding a tablet and looking forward.",
+    "caption": "An elderly man sits on a green outdoor sofa holding a tablet in a leafy garden.",
+    "clothing": "Bright orange polo shirt and light lavender shorts.",
+    "person": "Senior man, Caucasian, balding with grey hair, wearing glasses.",
+    "setting": "Outdoor patio with dense foliage hedges and small tree trunks."
+  },
+  "style": {
+    "composition": "Centered medium shot, slightly low angle, perspective distortion from wide perspective.",
+    "grading": "High contrast, punchy saturation on greens and oranges, bright natural highlights.",
+    "lens": {
+      "depth_of_field": "deep",
+      "focal_length_impression": "24mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "Overhead daylight",
+      "quality": "hard",
+      "temperature": "warm, approx 5800K"
+    },
+    "mood": "Vibrant, cheerful, modern senior lifestyle.",
+    "palette": [
+      {
+        "hex": "#D8812E",
+        "role": "dominant"
+      },
+      {
+        "hex": "#4D6049",
+        "role": "secondary"
+      },
+      {
+        "hex": "#1B3913",
+        "role": "background"
+      },
+      {
+        "hex": "#DF9977",
+        "role": "skin"
+      },
+      {
+        "hex": "#D1A5CB",
+        "role": "accent"
+      }
+    ]
+  }
+}

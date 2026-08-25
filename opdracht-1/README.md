@@ -89,12 +89,14 @@ geconfigureerde prijzen per beeld/step (bron staat per regel in
 ## Status
 
 - [x] Worker: queue/store-drivers, 3 varianten, LoRA-training, LUT-engine, cost logging, tests, Docker
-- [ ] 🧑 Reference-foto's in `data/reference/` + check of ze gedeeld mogen worden
-- [ ] 🧑 `analysis/human.md` (vóór het lezen van de AI-analyse)
+- [x] 🧑 Reference-foto's in `data/reference/` (23 beelden, blijven buiten git)
+- [x] 🧑 `analysis/human.md` (geschreven vóór het lezen van de AI-analyse)
+- [x] AI-analyse: 23 beelden + aggregatie ($0,04) → `analysis/ai/`
+- [x] `analysis/delta.md` — mens vs AI, met fotocheck als scheidsrechter
+- [ ] 🧑 Delta reviewen + samen mergen naar `analysis/style-guide.md`
 - [ ] 🧑 `lut/campaign.cube` exporteren
 - [ ] 🧑 Prompts in `matrix.yaml` vaststellen
 - [ ] Matrix draaien → 18 outputs + kosten-tabel
-- [ ] `analysis/delta.md` + merge naar `analysis/style-guide.md`
 - [ ] 🧑 Curatie → `images/final/`
 - [ ] Deck (5 slides)
 

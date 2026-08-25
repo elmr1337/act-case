@@ -1,0 +1,45 @@
+{
+  "content": {
+    "action": "Smiling directly toward camera while framed by hands holding a smartphone.",
+    "caption": "A smiling young woman outdoors is framed by hands holding up a smartphone.",
+    "clothing": "Yellow collared top under a pink hoodie seen in the foreground.",
+    "person": "Young adult female, fair skin, wavy strawberry-blonde hair, nose ring, pink eye makeup.",
+    "setting": "Outdoors with an overcast sky background."
+  },
+  "style": {
+    "composition": "Low-angle perspective, centered subject naturally framed by heavily blurred foreground hands and phone.",
+    "grading": "Slightly lifted shadows, vibrant pink tones, neutral daylight contrast curve.",
+    "lens": {
+      "depth_of_field": "shallow with extreme foreground bokeh",
+      "focal_length_impression": "35mm wide-angle look"
+    },
+    "lighting": {
+      "direction": "Frontal top-down",
+      "quality": "soft",
+      "temperature": "neutral, approx 5500K"
+    },
+    "mood": "Joyful, spontaneous, intimate.",
+    "palette": [
+      {
+        "hex": "#F2A2B3",
+        "role": "dominant"
+      },
+      {
+        "hex": "#E3E0DE",
+        "role": "background"
+      },
+      {
+        "hex": "#E8B09B",
+        "role": "skin"
+      },
+      {
+        "hex": "#BB8258",
+        "role": "secondary"
+      },
+      {
+        "hex": "#C9365C",
+        "role": "accent"
+      }
+    ]
+  }
+}
