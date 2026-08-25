@@ -3,18 +3,17 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{width:1920px;height:1080px;font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
      background:#faf9f7;color:#1d1d1f;overflow:hidden;position:relative}
-.slide{width:1920px;height:1080px;padding:64px 90px 92px;display:flex;flex-direction:column;gap:34px}
+.slide{width:1920px;height:1080px;padding:64px 90px 92px;display:flex;flex-direction:column;gap:36px}
 .kicker{font-size:19px;font-weight:700;color:#4789C6;text-transform:uppercase;letter-spacing:4px;margin-bottom:8px}
 h1{font-size:52px;font-weight:800;letter-spacing:-1.2px;line-height:1.05}
 h1 .accent{color:#d76a8a}
-h2{font-size:24px;font-weight:700;margin-bottom:14px}
-p,li{font-size:21px;line-height:1.45}
+h2{font-size:24px;font-weight:700;margin-bottom:16px}
+p,li{font-size:22px;line-height:1.5}
 ul{list-style:none}
-li{padding:7px 0 7px 30px;position:relative}
-li::before{content:'';position:absolute;left:2px;top:16px;width:12px;height:12px;border-radius:4px;background:#F2A2B3}
+li{padding:10px 0 10px 32px;position:relative}
+li::before{content:'';position:absolute;left:2px;top:20px;width:12px;height:12px;border-radius:4px;background:#F2A2B3}
 li.blue::before{background:#4789C6}
-li b{font-weight:700}
-.card{background:#fff;border-radius:20px;box-shadow:0 10px 34px rgba(29,29,31,.08);padding:30px 34px}
+.card{background:#fff;border-radius:20px;box-shadow:0 10px 34px rgba(29,29,31,.08);padding:34px 38px}
 .footer{position:absolute;bottom:30px;left:90px;right:90px;display:flex;justify-content:space-between;
         font-size:16px;color:#a3a29e;font-weight:600}
 img{object-fit:cover;display:block}
@@ -22,9 +21,9 @@ img{object-fit:cover;display:block}
        font-weight:700;padding:6px 14px;border-radius:999px;letter-spacing:.5px}
 .badge.new{background:#d76a8a}
 .imgwrap{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(29,29,31,.14)}
-.chip{display:inline-flex;align-items:center;gap:10px;background:#fff;border-radius:999px;
-      padding:10px 20px;font-size:18px;font-weight:600;box-shadow:0 4px 14px rgba(29,29,31,.08)}
-.note{font-size:17px;color:#7a7975;line-height:1.35}
+.chip{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:999px;
+      padding:11px 22px;font-size:19px;font-weight:600;box-shadow:0 4px 14px rgba(29,29,31,.08)}
+.note{font-size:17px;color:#7a7975;line-height:1.4}
 </style></head><body>
 <div class="slide">
   <div>
@@ -32,46 +31,40 @@ img{object-fit:cover;display:block}
     <h1>Twee analyses, <span class="accent">één style guide</span></h1>
   </div>
   <div style="display:flex;gap:30px;flex:1;min-height:0">
-    <div class="card" style="flex:1.05">
-      <h2>Eigen oog <span style="color:#a3a29e;font-weight:600">· vóór de AI-output</span></h2>
+    <div class="card" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+      <h2>Eigen oog <span style="color:#a3a29e;font-weight:600">· vóór de AI</span></h2>
       <ul>
-        <li>camera <b>net onder ooghoogte</b> — mensen voelen groter</li>
-        <li><b>blur – focus – blur</b>: onscherpe voorgrond, scherp gezicht</li>
-        <li>snapshot-kadrering: uit het midden, horizon mag scheef</li>
-        <li>kleur zit in <b>kleding &amp; props</b>, verzadiging blijft mid</li>
-        <li><b>1–2 mensen</b>, nooit figuranten; altijd een verbonden moment</li>
-        <li>Nederlands in huizen, kleding en luchten</li>
+        <li>camera <b>net onder ooghoogte</b></li>
+        <li><b>blur – focus – blur</b>: onscherpe voorgrond</li>
+        <li>snapshot-kadrering, niets geposeerd</li>
+        <li><b>1–2 mensen</b>, nooit figuranten</li>
       </ul>
     </div>
-    <div class="card" style="flex:1.05">
-      <h2>AI-analyse <span style="color:#a3a29e;font-weight:600">· 23 beelden, $0,04</span></h2>
-      <div style="display:flex;gap:12px;margin:6px 0 16px"><div style="flex:1"><div style="height:52px;border-radius:10px;background:#4789C6"></div><div style="font-size:14px;color:#7a7975;margin-top:6px;text-align:center">#4789C6<br>lucht / kleding</div></div><div style="flex:1"><div style="height:52px;border-radius:10px;background:#1D4A2B"></div><div style="font-size:14px;color:#7a7975;margin-top:6px;text-align:center">#1D4A2B<br>groen</div></div><div style="flex:1"><div style="height:52px;border-radius:10px;background:#F2A2B3"></div><div style="font-size:14px;color:#7a7975;margin-top:6px;text-align:center">#F2A2B3<br>roze accent</div></div><div style="flex:1"><div style="height:52px;border-radius:10px;background:#E39C16"></div><div style="font-size:14px;color:#7a7975;margin-top:6px;text-align:center">#E39C16<br>amber</div></div><div style="flex:1"><div style="height:52px;border-radius:10px;background:#E09C7B"></div><div style="font-size:14px;color:#7a7975;margin-top:6px;text-align:center">#E09C7B<br>huid</div></div></div>
+    <div class="card" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+      <h2>AI <span style="color:#a3a29e;font-weight:600">· 23 beelden · $0,04</span></h2>
+      <div style="display:flex;gap:14px;margin:10px 0 20px"><div style="flex:1"><div style="height:56px;border-radius:12px;background:#4789C6"></div><div style="font-size:15px;color:#a3a29e;margin-top:7px;text-align:center">#4789C6</div></div><div style="flex:1"><div style="height:56px;border-radius:12px;background:#1D4A2B"></div><div style="font-size:15px;color:#a3a29e;margin-top:7px;text-align:center">#1D4A2B</div></div><div style="flex:1"><div style="height:56px;border-radius:12px;background:#F2A2B3"></div><div style="font-size:15px;color:#a3a29e;margin-top:7px;text-align:center">#F2A2B3</div></div><div style="flex:1"><div style="height:56px;border-radius:12px;background:#E39C16"></div><div style="font-size:15px;color:#a3a29e;margin-top:7px;text-align:center">#E39C16</div></div><div style="flex:1"><div style="height:56px;border-radius:12px;background:#E09C7B"></div><div style="font-size:15px;color:#a3a29e;margin-top:7px;text-align:center">#E09C7B</div></div></div>
       <ul>
-        <li class="blue"><b>24–35 mm groothoek</b>, dicht op het onderwerp</li>
-        <li class="blue">warm-neutraal daglicht, <b>4800–5800 K</b></li>
-        <li class="blue">high-key, open schaduwen, crisp highlights</li>
-        <li class="blue">voorgrond-elementen breken bewust het kader</li>
+        <li class="blue"><b>24–35&thinsp;mm groothoek</b>, dichtbij</li>
+        <li class="blue">warm daglicht, <b>4800–5800&thinsp;K</b></li>
+        <li class="blue">voorgrond breekt bewust het kader</li>
       </ul>
     </div>
-    <div style="flex:1.25;display:flex;flex-direction:column;gap:12px">
+    <div style="flex:1.2;display:flex">
       <div class="imgwrap" style="flex:1">
         <img src="../assets/ref-35.jpg" style="width:100%;height:100%">
         <div class="badge">origineel</div>
-        <div class="chip" style="position:absolute;right:18px;top:64px">bewolkte Hollandse lucht</div>
+        <div class="chip" style="position:absolute;right:18px;top:64px">bewolkte lucht</div>
         <div class="chip" style="position:absolute;left:18px;bottom:104px">net onder ooghoogte</div>
-        <div class="chip" style="position:absolute;right:18px;bottom:30px">onscherpe voorgrond-hand</div>
+        <div class="chip" style="position:absolute;right:18px;bottom:30px">onscherpe voorgrond</div>
       </div>
     </div>
   </div>
-  <div class="card" style="display:flex;align-items:center;gap:26px;padding:22px 34px">
-    <div style="font-weight:800;font-size:21px;white-space:nowrap">Delta,<br>beslecht op<br>de originelen</div>
-    <div style="width:2px;align-self:stretch;background:#eeedea"></div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;flex:1">
-      <span class="chip">lens · mens 50–70&thinsp;mm vs AI 24–35&thinsp;mm → <b>&nbsp;AI wint</b></span>
-      <span class="chip">luchten · beiden te absoluut → <b>&nbsp;wisselend Hollands weer</b></span>
-      <span class="chip">verzadiging · <b>&nbsp;styling kleurig, grade natuurlijk</b></span>
-      <span class="chip" style="background:#1d1d1f;color:#fff">merge → style-guide.md stuurt álle generatie</span>
-    </div>
+  <div style="display:flex;gap:18px;align-items:center">
+    <span style="font-weight:800;font-size:20px;color:#a3a29e;letter-spacing:2px;text-transform:uppercase">delta</span>
+    <span class="chip">lens · <b>&nbsp;AI wint</b>&nbsp;(24–35&thinsp;mm)</span>
+    <span class="chip">luchten · <b>&nbsp;wisselend Hollands weer</b></span>
+    <span class="chip">verzadiging · <b>&nbsp;styling kleurig, grade mid</b></span>
+    <span class="chip" style="background:#1d1d1f;color:#fff">→ één gemergde style guide</span>
   </div>
   <div class="footer"><span>ACT.agency praktijkcase — opdracht 1 · visuele stijlkloning</span>
 <span>Elmar Hamelink · augustus 2026 · 1 / 5</span></div>

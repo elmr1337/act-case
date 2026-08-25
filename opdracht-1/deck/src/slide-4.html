@@ -3,18 +3,17 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{width:1920px;height:1080px;font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
      background:#faf9f7;color:#1d1d1f;overflow:hidden;position:relative}
-.slide{width:1920px;height:1080px;padding:64px 90px 92px;display:flex;flex-direction:column;gap:34px}
+.slide{width:1920px;height:1080px;padding:64px 90px 92px;display:flex;flex-direction:column;gap:36px}
 .kicker{font-size:19px;font-weight:700;color:#4789C6;text-transform:uppercase;letter-spacing:4px;margin-bottom:8px}
 h1{font-size:52px;font-weight:800;letter-spacing:-1.2px;line-height:1.05}
 h1 .accent{color:#d76a8a}
-h2{font-size:24px;font-weight:700;margin-bottom:14px}
-p,li{font-size:21px;line-height:1.45}
+h2{font-size:24px;font-weight:700;margin-bottom:16px}
+p,li{font-size:22px;line-height:1.5}
 ul{list-style:none}
-li{padding:7px 0 7px 30px;position:relative}
-li::before{content:'';position:absolute;left:2px;top:16px;width:12px;height:12px;border-radius:4px;background:#F2A2B3}
+li{padding:10px 0 10px 32px;position:relative}
+li::before{content:'';position:absolute;left:2px;top:20px;width:12px;height:12px;border-radius:4px;background:#F2A2B3}
 li.blue::before{background:#4789C6}
-li b{font-weight:700}
-.card{background:#fff;border-radius:20px;box-shadow:0 10px 34px rgba(29,29,31,.08);padding:30px 34px}
+.card{background:#fff;border-radius:20px;box-shadow:0 10px 34px rgba(29,29,31,.08);padding:34px 38px}
 .footer{position:absolute;bottom:30px;left:90px;right:90px;display:flex;justify-content:space-between;
         font-size:16px;color:#a3a29e;font-weight:600}
 img{object-fit:cover;display:block}
@@ -22,47 +21,41 @@ img{object-fit:cover;display:block}
        font-weight:700;padding:6px 14px;border-radius:999px;letter-spacing:.5px}
 .badge.new{background:#d76a8a}
 .imgwrap{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(29,29,31,.14)}
-.chip{display:inline-flex;align-items:center;gap:10px;background:#fff;border-radius:999px;
-      padding:10px 20px;font-size:18px;font-weight:600;box-shadow:0 4px 14px rgba(29,29,31,.08)}
-.note{font-size:17px;color:#7a7975;line-height:1.35}
+.chip{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:999px;
+      padding:11px 22px;font-size:19px;font-weight:600;box-shadow:0 4px 14px rgba(29,29,31,.08)}
+.note{font-size:17px;color:#7a7975;line-height:1.4}
 </style></head><body>
 <div class="slide">
   <div>
     <div class="kicker">Vergelijking</div>
-    <h1>Zes cellen, één prompt <span style="color:#a3a29e;font-weight:600;font-size:30px">· “young man, wireless earbuds, brick wall”</span></h1>
+    <h1>Zes cellen, één prompt <span style="color:#a3a29e;font-weight:600;font-size:28px">· wireless earbuds, brick wall</span></h1>
   </div>
-  <div style="display:flex;gap:34px;flex:1;min-height:0">
-    <div style="flex:2.6;display:grid;grid-template-columns:64px 1fr 1fr 1fr;grid-template-rows:34px 1fr 1fr;gap:14px 18px">
+  <div style="display:flex;gap:36px;flex:1;min-height:0">
+    <div style="flex:2.6;display:grid;grid-template-columns:56px 1fr 1fr 1fr;grid-template-rows:36px 1fr 1fr;gap:12px 18px">
       <div></div>
-      <div style="text-align:center;font-weight:800;font-size:20px">prompt</div>
-      <div style="text-align:center;font-weight:800;font-size:20px">multiref</div>
-      <div style="text-align:center;font-weight:800;font-size:20px">lora</div>
+      <div style="text-align:center;font-weight:800;font-size:21px">prompt</div>
+      <div style="text-align:center;font-weight:800;font-size:21px">multiref</div>
+      <div style="text-align:center;font-weight:800;font-size:21px">lora</div>
       <div style="writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;font-weight:800;color:#a3a29e">ronde 1</div>
-      <div style="display:flex;flex-direction:column;gap:8px"><div class="imgwrap" style="height:330px"><img src="../assets/r1-prompt-p2.jpg" style="width:100%;height:100%"></div><div style="font-size:16px;font-weight:600;color:#7a7975;text-align:center">plastic-look</div></div>
-      <div style="display:flex;flex-direction:column;gap:8px"><div class="imgwrap" style="height:330px"><img src="../assets/r1-multiref-p2.jpg" style="width:100%;height:100%"></div><div style="font-size:16px;font-weight:600;color:#7a7975;text-align:center">figuranten — tegen de regel</div></div>
-      <div style="display:flex;flex-direction:column;gap:8px"><div class="imgwrap" style="height:330px"><img src="../assets/r1-lora-p2.jpg" style="width:100%;height:100%"></div><div style="font-size:16px;font-weight:600;color:#7a7975;text-align:center">AI-glad, identity-risico</div></div>
+      <div style="display:flex;flex-direction:column;gap:9px"><div class="imgwrap" style="height:345px"><img src="../assets/r1-prompt-p2.jpg" style="width:100%;height:100%"></div><div style="font-size:17px;font-weight:700;color:#7a7975;text-align:center">plastic-look</div></div>
+      <div style="display:flex;flex-direction:column;gap:9px"><div class="imgwrap" style="height:345px"><img src="../assets/r1-multiref-p2.jpg" style="width:100%;height:100%"></div><div style="font-size:17px;font-weight:700;color:#7a7975;text-align:center">figuranten ✗</div></div>
+      <div style="display:flex;flex-direction:column;gap:9px"><div class="imgwrap" style="height:345px"><img src="../assets/r1-lora-p2.jpg" style="width:100%;height:100%"></div><div style="font-size:17px;font-weight:700;color:#7a7975;text-align:center">AI-glad</div></div>
       <div style="writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;font-weight:800;color:#a3a29e">ronde 3</div>
-      <div style="display:flex;flex-direction:column;gap:8px"><div class="imgwrap" style="height:330px"><img src="../assets/r3-prompt-p2.jpg" style="width:100%;height:100%"></div><div style="font-size:16px;font-weight:600;color:#7a7975;text-align:center">natuurlijker · buds blijven bedraad (Flux-prior)</div></div>
-      <div style="display:flex;flex-direction:column;gap:8px"><div class="imgwrap" style="height:330px"><img src="../assets/r3-multiref-p2.jpg" style="width:100%;height:100%"></div><div style="font-size:16px;font-weight:600;color:#2e7d4f;text-align:center">wireless ✓ · geen figuranten ✓ · winnaar</div></div>
-      <div style="display:flex;flex-direction:column;gap:8px"><div class="imgwrap" style="height:330px"><img src="../assets/r3-lora-p2.jpg" style="width:100%;height:100%"></div><div style="font-size:16px;font-weight:600;color:#7a7975;text-align:center">scale 0.85 + realism-tail: fotografischer</div></div>
+      <div style="display:flex;flex-direction:column;gap:9px"><div class="imgwrap" style="height:345px"><img src="../assets/r3-prompt-p2.jpg" style="width:100%;height:100%"></div><div style="font-size:17px;font-weight:700;color:#7a7975;text-align:center">natuurlijker</div></div>
+      <div style="display:flex;flex-direction:column;gap:9px"><div class="imgwrap" style="height:345px"><img src="../assets/r3-multiref-p2.jpg" style="width:100%;height:100%"></div><div style="font-size:17px;font-weight:700;color:#2e7d4f;text-align:center">winnaar ✓</div></div>
+      <div style="display:flex;flex-direction:column;gap:9px"><div class="imgwrap" style="height:345px"><img src="../assets/r3-lora-p2.jpg" style="width:100%;height:100%"></div><div style="font-size:17px;font-weight:700;color:#7a7975;text-align:center">fotografischer</div></div>
     </div>
-    <div class="card" style="flex:1;align-self:stretch;display:flex;flex-direction:column;gap:8px">
+    <div class="card" style="flex:1;display:flex;flex-direction:column">
       <h2>Kosten, echt gelogd</h2>
-      <table style="width:100%;border-collapse:collapse;font-size:19px">
-        <tr><td style="padding:9px 0;border-bottom:1px solid #eeedea">analyse — 23 beelden</td><td style="text-align:right;border-bottom:1px solid #eeedea">$0,04</td></tr>
-        <tr><td style="padding:9px 0;border-bottom:1px solid #eeedea">LoRA-training — 1000 steps</td><td style="text-align:right;border-bottom:1px solid #eeedea">$2,00</td></tr>
-        <tr><td style="padding:9px 0;border-bottom:1px solid #eeedea">27 generaties — 3 rondes</td><td style="text-align:right;border-bottom:1px solid #eeedea">$1,65</td></tr>
-        <tr><td style="padding:11px 0;font-weight:800;font-size:22px">totaal</td><td style="text-align:right;font-weight:800;font-size:22px">$3,69</td></tr>
+      <table style="width:100%;border-collapse:collapse;font-size:20px">
+        <tr><td style="padding:11px 0;border-bottom:1px solid #eeedea">analyse</td><td style="text-align:right;border-bottom:1px solid #eeedea">$0,04</td></tr>
+        <tr><td style="padding:11px 0;border-bottom:1px solid #eeedea">LoRA-training</td><td style="text-align:right;border-bottom:1px solid #eeedea">$2,00</td></tr>
+        <tr><td style="padding:11px 0;border-bottom:1px solid #eeedea">27 beelden, 3 rondes</td><td style="text-align:right;border-bottom:1px solid #eeedea">$1,65</td></tr>
+        <tr><td style="padding:13px 0;font-weight:800;font-size:24px">totaal</td><td style="text-align:right;font-weight:800;font-size:24px">$3,69</td></tr>
       </table>
-      <div class="note" style="margin-top:8px">per beeld: Flux $0,025 · Nano Banana Pro $0,134<br>
-      per-cel-log in <b>outputs/costs.json</b> (bron: response of geconfigureerd tarief)</div>
-      <div style="margin-top:22px;background:#faf9f7;border-radius:12px;padding:14px 18px;font-size:17px">
-        Budgetproef: <b>$5 aan fal-credits</b> was genoeg voor de training én alle
-        Flux-rondes; Gemini bleef ruim onder de $1,50.
-      </div>
-      <div style="margin-top:auto;background:#faf9f7;border-radius:12px;padding:14px 18px;font-size:17px">
-        Iteratie is goedkoop: een cel opnieuw draaien kost 3 tot 15 dollarcent —
-        <b>de curatie-loop is dus de motor</b>, niet de eerste gok.
+      <div class="note" style="margin-top:14px">per beeld $0,025 – $0,134 · log in outputs/costs.json</div>
+      <div style="margin-top:auto;background:#faf9f7;border-radius:12px;padding:18px 22px;font-size:19px;line-height:1.45">
+        Een cel opnieuw draaien kost <b>centen</b> —<br><b>itereren is de motor</b>, niet de eerste gok.
       </div>
     </div>
   </div>
