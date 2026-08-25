@@ -1,0 +1,1 @@
+{"ts":"2026-08-25T09:13:37.145Z","method":"GET","path":"/content/templates/103","status":200,"ms":2,"requestHeaders":{"accept":"application/json","authorization":"<redacted:17chars>"},"responseShape":{"data":{"id":"integer","name":"string","updated_at":"string(date-time)","parameters":[{"name":"string","label":"string","type":"string"}]}},"note":"template + parameters ophalen"}

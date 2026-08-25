@@ -20,6 +20,6 @@ prompts:
   - id: p1
     text: "a woman in her sixties waving at her smartphone during a video call in her backyard"
   - id: p2
-    text: "a young man with earbuds listening to music, eyes closed, leaning against a brick wall on a city street"
+    text: "a young man with wireless earbuds listening to music, eyes closed, leaning against a brick wall on a city street"
   - id: p3
     text: "two friends laughing together at a smartphone screen on a couch in a living room"

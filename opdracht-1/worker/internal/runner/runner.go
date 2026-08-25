@@ -212,7 +212,9 @@ func (r *Runner) generate(ctx context.Context, j job.Job) (string, error) {
 			}
 			loraURL = meta.LoraURL
 		}
-		full := fmt.Sprintf("%s, %s", r.Cfg.TriggerPhrase, j.Prompt)
+		// De style prompt gaat hier niet mee (stijl zit in de LoRA), maar de
+		// realism-tail wel: zonder oogt Flux+LoRA net te "gerenderd".
+		full := fmt.Sprintf("%s, %s, natural unretouched skin texture, candid documentary photo realism, subtle imperfections", r.Cfg.TriggerPhrase, j.Prompt)
 		gen, err = r.Fal.GenerateLora(ctx, full, loraURL)
 	default:
 		return "", fmt.Errorf("onbekende variant %q", j.Variant)

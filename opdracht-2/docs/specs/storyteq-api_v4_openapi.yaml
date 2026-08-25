@@ -1,0 +1,541 @@
+openapi: 3.1.0
+info:
+  title: Storyteq API (Creative Automation) Reference
+  version: "4.0"
+  description: |
+    # Storyteq API (Creative Automation) v4 Reference
+    
+    ## Overview
+    This document describes the basic usage for performing media creation calls on the Storyteq API. All calls will return the response as JSON.
+    
+    ## Authentication
+    Each request must have an Authorization header with a Bearer token. Contact your regular contact person to obtain a token.
+servers:
+  - url: https://api.{region}.storyteq.com/v4
+    description: v4 (Regional)
+    variables:
+      region:
+        default: europe-west1
+        enum:
+          - europe-west1
+          - us-east4
+  - url: https://api.storyteq.com/v4
+    description: v4 (Legacy, Deprecated)
+security:
+  - TokenAuth: [ ]
+components:
+  securitySchemes:
+    TokenAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: token
+  schemas:
+    Company:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    Template:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateParameter'
+        blueprint:
+          $ref: '#/components/schemas/TemplateBlueprint'
+        project_dir:
+          type: string
+    TemplateParameter:
+      type: object
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
+    TemplateBlueprint:
+      type: object
+      properties:
+        template_scenes:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateScene'
+        template_modules:
+          type: array
+          items:
+            type: object
+        audio_configuration:
+          type: object
+          properties:
+            type:
+              type: string
+            dependency:
+              type: string
+        poster_configuration:
+          type: object
+          properties:
+            type:
+              type: string
+        blueprint_configuration:
+          type: string
+    TemplateScene:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+    Media:
+      type: object
+      properties:
+        id:
+          type: integer
+        template_id:
+          type: integer
+        hash:
+          type: string
+        current_status:
+          type: string
+        urls:
+          type: object
+          properties:
+            image:
+              type: string
+              format: uri
+            video:
+              type: string
+              format: uri
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaParameter'
+        show_player_logo:
+          type: boolean
+        duration:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    MediaParameter:
+      type: object
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
+        value:
+          type: string
+    WebhookNotification:
+      type: object
+      required:
+        - type
+        - route
+      properties:
+        type:
+          type: string
+          enum:
+            - webhook
+        route:
+          type: string
+          format: uri
+    GenericError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+    GenericErrors:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+    CreateMediaFailed:
+      allOf:
+        - $ref: '#/components/schemas/GenericErrors'
+        - type: object
+          properties:
+            errors:
+              type: object
+              description: Parameter-specific error messages
+              patternProperties:
+                "^[\\w-]+\\.[\\w-]+$":
+                  type: array
+                  description: List of error messages for the parameter
+                  items:
+                    description: Error message
+                    type: string
+    MediaEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+        hash:
+          type: string
+        template_id:
+          type: integer
+        template_version_id:
+          type: integer
+        template_version:
+          type: integer
+        template_version_status:
+          type: integer
+          enum:
+            - 0
+            - 2
+            - 13
+          x-enum-descriptions:
+            0: Draft (Ad Builder)
+            2: Production
+            13: Draft (After Effects)
+        name:
+          type: string
+        company:
+          $ref: '#/components/schemas/Company'
+        user:
+          $ref: '#/components/schemas/User'
+        current_status:
+          type: string
+          enum:
+            - queued
+            - rendering
+            - uploading
+            - finished
+            - failed
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        download_urls:
+          type: object
+          properties:
+            image:
+              type: string
+              format: uri
+            gif:
+              type: string
+              format: uri
+            video:
+              type: string
+              format: uri
+            banner:
+              type: string
+              format: uri
+
+    MediaQueued:
+      type: object
+      allOf:
+        - type: object
+          properties:
+            current_status:
+              type: string
+              enum:
+                - queued
+              x-enum-default: "queued"
+        - $ref: '#/components/schemas/MediaEvent'
+    MediaRendering:
+      type: object
+      allOf:
+        - type: object
+          properties:
+            current_status:
+              type: string
+              enum:
+                - rendering
+              x-enum-default: "rendering"
+        - $ref: '#/components/schemas/MediaEvent'
+    MediaUploading:
+      type: object
+      allOf:
+        - type: object
+          properties:
+            current_status:
+              type: string
+              enum:
+                - uploading
+              x-enum-default: "uploading"
+        - $ref: '#/components/schemas/MediaEvent'
+    MediaFinished:
+      type: object
+      allOf:
+        - type: object
+          properties:
+            current_status:
+              type: string
+              enum:
+                - finished
+              x-enum-default: "finished"
+        - $ref: '#/components/schemas/MediaEvent'
+    MediaFailed:
+      type: object
+      allOf:
+        - type: object
+          properties:
+            current_status:
+              type: string
+              enum:
+                - failed
+              x-enum-default: "failed"
+        - $ref: '#/components/schemas/MediaEvent'
+
+  requestBodies:
+    CreateMedia:
+      description: Request body for creating media
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              template_parameters:
+                type: object
+                additionalProperties:
+                  type: string
+              notifications:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WebhookNotification'
+  responses:
+    ListTemplates:
+      description: A list of templates
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Template'
+    SingleTemplate:
+      description: A single template
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Template'
+    ListMedia:
+      description: A list of media
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Media'
+              links:
+                type: object
+              meta:
+                type: object
+    CreatedMedia:
+      description: Media creation response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                $ref: '#/components/schemas/Media'
+    SingleMedia:
+      description: Media details
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Media'
+
+    GenericError:
+      description: Single error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+    GenericErrors:
+      description: Multiple errors response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericErrors'
+    CreateMediaFailed:
+      description: Media creation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateMediaFailed'
+
+paths:
+  /content/templates/:
+    get:
+      summary: Fetch all templates
+      description: Returns all templates accessible to the user.
+      tags:
+        - Templates
+      responses:
+        '200':
+          $ref: '#/components/responses/ListTemplates'
+        '4XX':
+          $ref: '#/components/responses/GenericError'
+  /content/templates/{templateId}:
+    get:
+      summary: Fetch a specific template
+      description: Returns a specific template and its parameter configuration.
+      tags:
+        - Templates
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/SingleTemplate'
+        '4XX':
+          $ref: '#/components/responses/GenericError'
+  /content/templates/{templateId}/media:
+    post:
+      summary: Create media on a template
+      description: |
+        Create media on a template. Provide key-value pairs for parameters in the template_parameters object. Retrieve the template first to inspect parameter configuration.
+      tags:
+        - Templates
+        - Media
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: '#/components/requestBodies/CreateMedia'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreatedMedia'
+        '4XX':
+          $ref: '#/components/responses/GenericError'
+        '409':
+          $ref: '#/components/responses/GenericError'
+        '422':
+          $ref: '#/components/responses/CreateMediaFailed'
+    get:
+      summary: Fetch all media for a template
+      description: Retrieve media for a template. Supports pagination (50 per page).
+      tags:
+        - Templates
+        - Media
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/ListMedia'
+        '4XX':
+          $ref: '#/components/responses/GenericError'
+  /content/media/{mediaId}:
+    get:
+      summary: Fetch a specific media
+      description: Retrieve a specific media and its status/URLs.
+      tags:
+        - Media
+      parameters:
+        - name: mediaId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/SingleMedia'
+        '4XX':
+          $ref: '#/components/responses/GenericError'
+
+webhooks:
+  MediaQueued:
+    description: Webhook triggered when media is queued for processing
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MediaQueued'
+  MediaRendering:
+    description: Webhook triggered when media rendering starts
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MediaRendering'
+  MediaUploading:
+    description: Webhook triggered when media uploading starts
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MediaUploading'
+  MediaFinished:
+    description: Webhook triggered when media creation is completed
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MediaFinished'
+  MediaFailed:
+    description: Webhook triggered when media creation fails
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MediaFailed'

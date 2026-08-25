@@ -222,12 +222,14 @@ func (f *Fal) GenerateLora(ctx context.Context, prompt, loraURL string) (GenResu
 	if loraURL == "" {
 		return GenResult{}, fmt.Errorf("geen LoRA-URL: draai eerst een train-job")
 	}
+	// Lagere guidance en meer steps dan de kale Flux-variant: geeft een
+	// fotografischer, minder "AI-glad" resultaat nu de stijl al in de LoRA zit.
 	input := map[string]any{
 		"prompt":                prompt,
 		"image_size":            f.ImageSize,
 		"num_images":            1,
-		"num_inference_steps":   28,
-		"guidance_scale":        3.5,
+		"num_inference_steps":   40,
+		"guidance_scale":        3.0,
 		"output_format":         "png",
 		"enable_safety_checker": true,
 		"loras": []map[string]any{
