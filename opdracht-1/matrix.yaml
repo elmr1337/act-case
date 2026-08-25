@@ -10,7 +10,7 @@
 client_id: act-case
 analyze: false
 train:
-  enabled: true
+  enabled: false      # LoRA staat al in models/; opnieuw trainen kost ~$2
   steps: [1000]
 
 variants: [prompt, multiref, lora]
