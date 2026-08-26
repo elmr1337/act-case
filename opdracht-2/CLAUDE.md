@@ -20,7 +20,7 @@ make test           # vitest — zod-parsing van API-responses
 make explore        # Storyteq API verkennen (schrijft naar docs/discovery/)
 make docker-build   # image bouwen
 make docker-run     # image draaien met --env-file .env.local
-make compose-up     # app + Redis (persistente joblijst)
+                    # persistente joblijst: zet JOBS_DB in .env.local
 ```
 
 Config via `opdracht-2/.env.local` (template: `.env.example`).
@@ -34,7 +34,7 @@ browser ──► app/api/*  (route handlers = proxy)  ──► api.{region}.st
             lib/queries.ts      TanStack Query hooks (incl. polling)
 
 jouw joblijst:  lib/jobs.ts (localStorage)  ─┬─► niets meer, standaard
-                                             └─► /api/jobs ──► Redis, als REDIS_URL gezet is
+                                             └─► /api/jobs ──► SQLite, als JOBS_DB gezet is
 ```
 
 ## Conventies
@@ -55,7 +55,7 @@ jouw joblijst:  lib/jobs.ts (localStorage)  ─┬─► niets meer, standaard
   Nieuwe aannames krijgen een test in `lib/schemas.test.ts` of `lib/dto.test.ts`.
 - **UI-taal is Nederlands en jargonvrij.** "Template", "asset" en "genereren" zijn
   het maximum; geen statuscodes, geen veldnamen uit de API (die zijn UUID's).
-- **Local-first.** De joblijst werkt altijd zonder server-opslag; Redis is een
+- **Local-first.** De joblijst werkt altijd zonder server-opslag; SQLite is een
   optionele spiegel. Faalt de server, dan merkt de gebruiker dat niet.
 - **Modus moet zichtbaar zijn, en één bediening hebben.** Enkel of batch
   verschilt alleen in de URL en de inhoud; daarom een expliciete `ModeToggle` in

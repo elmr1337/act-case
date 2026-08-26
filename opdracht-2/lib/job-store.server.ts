@@ -1,11 +1,11 @@
 import "server-only";
 import { z } from "zod";
 
-import { getRedis, isRedisConfigured } from "./redis";
+import { getDb, isPersistenceConfigured } from "./sqlite";
 import { SESSION_TTL_SECONDS } from "./session";
 
 /**
- * Server-side opslag van jouw joblijst. Alleen actief als `REDIS_URL` gezet is;
+ * Server-side opslag van jouw joblijst. Alleen actief als `JOBS_DB` gezet is;
  * anders is de browser de enige plek waar de lijst leeft en doen al deze
  * functies niets.
  *
@@ -25,72 +25,123 @@ export const storedJobSchema = z.object({
 export type StoredJob = z.infer<typeof storedJobSchema>;
 
 const MAX_JOBS = 60;
-const key = (sessionId: string) => `storyteq:jobs:${sessionId}`;
 
 export function persistenceEnabled() {
-  return isRedisConfigured();
+  return isPersistenceConfigured();
 }
 
-export async function readJobs(sessionId: string): Promise<StoredJob[]> {
-  const redis = await getRedis();
-  if (!redis) return [];
+const now = () => Math.floor(Date.now() / 1000);
+
+/** Ruimt verlopen sessies op. Goedkoop genoeg om bij elke lees-actie te doen. */
+function sweep(db: NonNullable<ReturnType<typeof getDb>>) {
+  db.prepare("DELETE FROM jobs WHERE expires_at < ?").run(now());
+}
+
+export function readJobs(sessionId: string): StoredJob[] {
+  const db = getDb();
+  if (!db) return [];
 
   try {
-    const raw = await redis.get(key(sessionId));
-    if (!raw) return [];
-    const parsed = z.array(storedJobSchema).safeParse(JSON.parse(raw));
-    return parsed.success ? parsed.data : [];
+    sweep(db);
+    const rows = db
+      .prepare(
+        "SELECT payload FROM jobs WHERE session_id = ? ORDER BY created_at DESC LIMIT ?",
+      )
+      .all(sessionId, MAX_JOBS) as Array<{ payload: string }>;
+
+    return rows
+      .map((row) => storedJobSchema.safeParse(JSON.parse(row.payload)))
+      .filter((parsed) => parsed.success)
+      .map((parsed) => parsed.data);
   } catch (err) {
     console.error("[jobs] lezen mislukt", err);
     return [];
   }
 }
 
-async function writeJobs(sessionId: string, jobs: StoredJob[]) {
-  const redis = await getRedis();
-  if (!redis) return;
+export function addJobs(sessionId: string, incoming: StoredJob[]): StoredJob[] {
+  const db = getDb();
+  if (!db) return [];
 
   try {
-    await redis.set(key(sessionId), JSON.stringify(jobs.slice(0, MAX_JOBS)), {
-      expiration: { type: "EX", value: SESSION_TTL_SECONDS },
-    });
+    const expires = now() + SESSION_TTL_SECONDS;
+    const insert = db.prepare(
+      `INSERT INTO jobs (session_id, id, payload, created_at, expires_at)
+       VALUES (?, ?, ?, ?, ?)
+       ON CONFLICT (session_id, id) DO UPDATE SET payload = excluded.payload`,
+    );
+
+    // Eén transactie: een batch van veertig regels hoort in zijn geheel te
+    // landen of helemaal niet.
+    db.exec("BEGIN");
+    try {
+      for (const job of incoming) {
+        insert.run(sessionId, job.id, JSON.stringify(job), job.createdAt, expires);
+      }
+      // Alleen de nieuwste MAX_JOBS bewaren.
+      db.prepare(
+        `DELETE FROM jobs WHERE session_id = ? AND id NOT IN (
+           SELECT id FROM jobs WHERE session_id = ? ORDER BY created_at DESC LIMIT ?
+         )`,
+      ).run(sessionId, sessionId, MAX_JOBS);
+      db.exec("COMMIT");
+    } catch (err) {
+      db.exec("ROLLBACK");
+      throw err;
+    }
   } catch (err) {
     // De browser heeft de lijst ook; dit mag nooit een request laten falen.
     console.error("[jobs] schrijven mislukt", err);
   }
+
+  return readJobs(sessionId);
 }
 
-/** Voegt toe en houdt de nieuwste vooraan, zonder dubbelingen. */
-export async function addJobs(sessionId: string, incoming: StoredJob[]) {
-  const existing = await readJobs(sessionId);
-  const ids = new Set(incoming.map((job) => job.id));
-  const merged = [...incoming, ...existing.filter((job) => !ids.has(job.id))].sort(
-    (a, b) => b.createdAt - a.createdAt,
-  );
-  await writeJobs(sessionId, merged);
-  return merged;
-}
-
-export async function updateJob(
+export function updateJob(
   sessionId: string,
   id: string,
   patch: Partial<Pick<StoredJob, "phase" | "seen">>,
-) {
-  const jobs = await readJobs(sessionId);
-  const index = jobs.findIndex((job) => job.id === id);
-  if (index === -1) return jobs;
+): StoredJob[] {
+  const db = getDb();
+  if (!db) return [];
 
-  const next = [...jobs];
-  next[index] = { ...next[index], ...patch };
-  await writeJobs(sessionId, next);
-  return next;
+  try {
+    const row = db
+      .prepare("SELECT payload FROM jobs WHERE session_id = ? AND id = ?")
+      .get(sessionId, id) as { payload: string } | undefined;
+
+    if (row) {
+      const parsed = storedJobSchema.safeParse(JSON.parse(row.payload));
+      if (parsed.success) {
+        const next = { ...parsed.data, ...patch };
+        db.prepare("UPDATE jobs SET payload = ? WHERE session_id = ? AND id = ?").run(
+          JSON.stringify(next),
+          sessionId,
+          id,
+        );
+      }
+    }
+  } catch (err) {
+    console.error("[jobs] bijwerken mislukt", err);
+  }
+
+  return readJobs(sessionId);
 }
 
-export async function clearFinished(sessionId: string) {
-  const jobs = await readJobs(sessionId);
-  const remaining = jobs.filter(
-    (job) => job.phase !== "finished" && job.phase !== "failed",
-  );
-  await writeJobs(sessionId, remaining);
-  return remaining;
+export function clearFinished(sessionId: string): StoredJob[] {
+  const db = getDb();
+  if (!db) return [];
+
+  try {
+    // De fase zit in de JSON; SQLite kan daar met json_extract bij.
+    db.prepare(
+      `DELETE FROM jobs
+       WHERE session_id = ?
+         AND json_extract(payload, '$.phase') IN ('finished', 'failed')`,
+    ).run(sessionId);
+  } catch (err) {
+    console.error("[jobs] opruimen mislukt", err);
+  }
+
+  return readJobs(sessionId);
 }

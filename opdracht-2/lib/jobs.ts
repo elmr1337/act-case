@@ -9,7 +9,7 @@ import type { AssetPhase } from "./dto";
  * van jou zijn, zodat je ze kunt volgen zonder op één pagina te blijven staan.
  *
  * Local-first: standaard leeft deze lijst in localStorage — geen database, geen
- * account. Staat `REDIS_URL` op de server, dan spiegelt hij bovendien naar
+ * account. Staat `JOBS_DB` op de server, dan spiegelt hij bovendien naar
  * `/api/jobs` onder een anonieme sessie-cookie, zodat je overzicht het legen van
  * je browseropslag overleeft. Werkt dat niet, dan merkt de gebruiker er niets
  * van: de browser blijft de bron.

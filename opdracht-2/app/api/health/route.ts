@@ -22,8 +22,8 @@ export function GET() {
     status: "ok",
     storyteq,
     region,
-    // "browser" = joblijst alleen in localStorage; "redis" = ook server-side.
-    jobs: persistenceEnabled() ? "redis" : "browser",
+    // "browser" = joblijst alleen in localStorage; "sqlite" = ook server-side.
+    jobs: persistenceEnabled() ? "sqlite" : "browser",
     uptime: Math.round(process.uptime()),
   });
 }

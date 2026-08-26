@@ -12,7 +12,7 @@ import {
 import { getOrCreateSessionId, getSessionId } from "@/lib/session";
 
 /**
- * Jouw joblijst, server-side bewaard — maar alleen als `REDIS_URL` gezet is.
+ * Jouw joblijst, server-side bewaard — maar alleen als `JOBS_DB` gezet is.
  * Staat dat niet aan, dan antwoordt dit endpoint `enabled: false` en houdt de
  * browser het zelf bij. De client stopt dan met synchroniseren.
  */
@@ -20,7 +20,7 @@ export const GET = handler(async () => {
   if (!persistenceEnabled()) return ok({ enabled: false, jobs: [] });
 
   const sessionId = await getSessionId();
-  return ok({ enabled: true, jobs: sessionId ? await readJobs(sessionId) : [] });
+  return ok({ enabled: true, jobs: sessionId ? readJobs(sessionId) : [] });
 });
 
 export const POST = handler(async (request: Request) => {
@@ -30,7 +30,7 @@ export const POST = handler(async (request: Request) => {
   if (!parsed.success) return ok({ enabled: true, jobs: [] });
 
   const sessionId = await getOrCreateSessionId();
-  return ok({ enabled: true, jobs: await addJobs(sessionId, parsed.data) });
+  return ok({ enabled: true, jobs: addJobs(sessionId, parsed.data) });
 });
 
 const patchSchema = z.object({
@@ -49,12 +49,12 @@ export const PATCH = handler(async (request: Request) => {
   if (!sessionId) return ok({ enabled: true, jobs: [] });
 
   const { id, ...patch } = parsed.data;
-  return ok({ enabled: true, jobs: await updateJob(sessionId, id, patch) });
+  return ok({ enabled: true, jobs: updateJob(sessionId, id, patch) });
 });
 
 export const DELETE = handler(async () => {
   if (!persistenceEnabled()) return ok({ enabled: false, jobs: [] });
 
   const sessionId = await getSessionId();
-  return ok({ enabled: true, jobs: sessionId ? await clearFinished(sessionId) : [] });
+  return ok({ enabled: true, jobs: sessionId ? clearFinished(sessionId) : [] });
 });

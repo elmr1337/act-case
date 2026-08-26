@@ -29,12 +29,18 @@ ENV NODE_ENV=production \
     PORT=3000 \
     HOSTNAME=0.0.0.0
 
-# `node` bestaat al in het base-image; niet als root draaien.
-USER node
-
 COPY --from=build --chown=node:node /app/.next/standalone ./
 COPY --from=build --chown=node:node /app/.next/static ./.next/static
 COPY --from=build --chown=node:node /app/public ./public
+
+# Plek voor de optionele SQLite-joblijst (JOBS_DB). Blijft leeg als je die niet
+# gebruikt; `make docker-run` hangt er een volume aan zodat hij een herstart
+# overleeft.
+RUN mkdir -p /data && chown node:node /data
+VOLUME /data
+
+# `node` bestaat al in het base-image; niet als root draaien.
+USER node
 
 EXPOSE 3000
 

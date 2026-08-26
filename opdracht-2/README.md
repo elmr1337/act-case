@@ -61,11 +61,8 @@ make docker-build
 make docker-run              # http://localhost:3000
 ```
 
-Of mét persistente joblijst:
-
-```bash
-make compose-up              # app + Redis
-```
+`make docker-run` hangt er een volume aan; zet `JOBS_DB=/data/jobs.db` in
+`.env.local` als je wilt dat je overzicht een herstart overleeft.
 
 De image draait als non-root en heeft geen Node-toolchain op de host nodig.
 `GET /api/health` vertelt of de app draait én of de Storyteq-config compleet is:
@@ -106,17 +103,20 @@ open staat, een systeemmelding als dat niet zo is. Toestemming daarvoor vragen w
 pas op het moment dat je een batch start, niet ongevraagd bij het laden.
 
 Die lijst leeft standaard in `localStorage`: geen database, geen account. Zet je
-`REDIS_URL`, dan spiegelt hij bovendien naar de server onder een anonieme
-sessie-cookie, zodat je overzicht het legen van je browseropslag overleeft:
+`JOBS_DB`, dan spiegelt hij bovendien naar een SQLite-bestand op de server onder
+een anonieme sessie-cookie, zodat je overzicht het legen van je browseropslag
+overleeft:
 
 ```bash
-make compose-up      # app + Redis
-curl -s localhost:3000/api/health   # ... "jobs":"redis"
+# in .env.local:  JOBS_DB=/data/jobs.db
+make docker-run                     # het volume zit er al aan
+curl -s localhost:3000/api/health   # ... "jobs":"sqlite"
 ```
 
-Is Redis er niet, of valt hij weg? Dan merkt de gebruiker daar niets van — de
-browser blijft de bron. Er staat trouwens geen render-inhoud in Redis, alleen
-media-id's en een label; de assets zelf blijven bij Storyteq.
+Geen extra service nodig: `node:sqlite` zit in Node 22. Is `JOBS_DB` niet gezet,
+of is het bestand niet te openen? Dan merkt de gebruiker daar niets van — de
+browser blijft de bron. Er staat trouwens geen render-inhoud in, alleen media-id's
+en een label; de assets zelf blijven bij Storyteq.
 
 Diezelfde naad is ook de plek waar Storyteq's **webhooks** zouden landen: zonder
 server-side opslag is er nergens om "deze render is klaar" te bewaren, met wel.
@@ -151,6 +151,7 @@ achtergrond staat.
 | **Route handlers als proxy** | Drie vliegen: de key blijft server-side, alle traffic komt langs één punt (discovery-logging), en de download kan een eigen `Content-Disposition` krijgen zodat hij écht met één klik binnenkomt. |
 | **TanStack Query voor server state** | Templates, de aanmaak-actie en de renderstatus zijn allemaal server state. Het pollen is één regel — `refetchInterval` als functie van de status, die vanzelf stopt bij `finished`/`failed`. |
 | **Eigen mini-store voor de joblijst, geen state manager** | De joblijst is de énige echte client state in deze app, en het is één array met vijf operaties. Dat is een `useSyncExternalStore`-store van honderd regels (`lib/jobs.ts`), niet Zustand of Redux. Zie ook "De wachtrij" hieronder. |
+| **SQLite via `node:sqlite`, geen tweede service** | De optionele server-opslag was eerst Redis — een reflex, want opdracht 1 gebruikt het ook. Voor één lijstje per sessie is dat overkill: `node:sqlite` zit sinds Node 22 in de runtime, dus dit kost nul dependencies en nul containers. Wat je inlevert: meerdere app-instances kunnen niet hetzelfde bestand delen, en in Node 22 print het een `ExperimentalWarning` (stabiel in 24). Voor één container is dat een goede ruil. |
 | **shadcn/ui primitives, geen blocks** | Alleen button, input, textarea, card, progress, skeleton, label en sonner — de bouwstenen, met een eigen theme erop. Bewust géén sidebar- of dashboard-blocks: de opdracht vraagt letterlijk om geen technisch dashboard. |
 | **Tailwind v4** | Theme als CSS-variabelen, geen config-bestand nodig. |
 | **Zod op de route handlers** | Een API die we niet volledig kennen levert onbetrouwbare responses. Loose schemas: onbekende velden mogen erbij, ontbrekende velden breken de app niet. |
@@ -290,9 +291,9 @@ lib/
   queries.ts                   TanStack Query hooks incl. polling
   history.ts                   duurverwachting + voorbeelden uit eerdere renders
   csv.ts                       invulbestand maken en inlezen
-  jobs.ts                      jouw joblijst (localStorage, optioneel naar Redis)
-  job-store.server.ts          de Redis-kant daarvan
-  redis.ts / session.ts        optionele persistentie, anonieme sessie
+  jobs.ts                      jouw joblijst (localStorage, optioneel naar SQLite)
+  job-store.server.ts          de server-kant daarvan
+  sqlite.ts / session.ts       optionele persistentie, anonieme sessie
 docs/
   api-discovery.md             wat we over de API ontdekten
   specs/                       de opgehaalde OpenAPI-spec
